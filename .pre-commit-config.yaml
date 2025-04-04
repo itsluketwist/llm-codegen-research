@@ -1,10 +1,10 @@
-files: 'src/|tests/'
+files: 'llm_cgr/|tests/'
 
 repos:
 
 # pre-commit
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: 'v4.6.0'
+    rev: 'v5.0.0'
     hooks:
       - id: check-case-conflict
       - id: end-of-file-fixer
@@ -17,14 +17,14 @@ repos:
 
 # isort
 -   repo: https://github.com/PyCQA/isort
-    rev: '5.13.2'
+    rev: '6.0.1'
     hooks:
       - id: isort
         args: ["--line-length=88", "--multi-line=3", "--lines-after-imports=2", "--trailing-comma"]
 
 # ruff linter and formatter
 -   repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.6.1
+    rev: v0.11.4
     hooks:
       - id: ruff
         types_or: [ python, pyi, jupyter ]
@@ -34,7 +34,7 @@ repos:
 
 # mypy type-checker
 -   repo: https://github.com/pre-commit/mirrors-mypy
-    rev: 'v1.11.1'
+    rev: 'v1.15.0'
     hooks:
       - id: mypy
         args: ["--show-error-codes", "--ignore-missing-imports"]

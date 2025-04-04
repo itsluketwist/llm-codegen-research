@@ -9,13 +9,13 @@ build-backend = "setuptools.build_meta"
 enabled = true
 
 [tool.setuptools]
-packages = ["src"]
+packages = ["llm_cgr"]
 
 [project]
-name = "python_template"
+name = "llm_cgr"
 # version = "0.0.0"
 dynamic = ["version", "dependencies", "optional-dependencies"]
-description = "python-template..."
+description = "Utilities for use when research code-generation by LLMs."
 readme = "README.md"
 authors = [{ name = "Lukas Twist", email = "itsluketwist@gmail.com" }]
 license = { file = "LICENSE" }
@@ -24,13 +24,12 @@ classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
 ]
-keywords = ["python-template"]
-dependencies = []
+keywords = ["llm", "code-generation", "research", "prompting", "nlp"]
 requires-python = ">=3.10"
 
 [tool.setuptools.dynamic]
-dependencies = {file = ["requirements.txt"]}
+dependencies = {file = ["requirements.lock"]}
 optional-dependencies.dev = { file = ["requirements-dev.txt"] }
 
 [project.urls]
-Homepage = "https://github.com/itsluketwist/python-template"
+Homepage = "https://github.com/itsluketwist/llm-codegen-research"
