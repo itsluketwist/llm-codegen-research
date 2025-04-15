@@ -23,6 +23,9 @@ class CodeBlock:
         _lines = f"lines={len(self.text.splitlines())}"
         return f"{self.__class__.__name__}({_language}, {_lines})"
 
+    def __str__(self):
+        return self.text
+
     @property
     def markdown(self):
         return f"```{self.language or ''}\n{self.text}\n```"
@@ -50,6 +53,9 @@ class Markdown:
         _code_blocks = f"code_blocks={len(self.code_blocks)}"
         _languages = f"languages={','.join(self.languages)}"
         return f"{self.__class__.__name__}({_lines}, {_code_blocks}, {_languages})"
+
+    def __str__(self):
+        return self.text
 
     @staticmethod
     def extract_code_blocks(response: str) -> list[CodeBlock]:
