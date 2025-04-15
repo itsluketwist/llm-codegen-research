@@ -10,8 +10,8 @@ enabled = true
 
 [project]
 name = "llm_cgr"
-# version = "0.0.2"
-dynamic = ["version", "dependencies", "optional-dependencies"]
+version = "0.0.2"
+dynamic = ["dependencies", "optional-dependencies"]  # use dynamic "version" later
 description = "Utilities for use when research code-generation by LLMs."
 readme = "README.md"
 authors = [{ name = "Lukas Twist", email = "itsluketwist@gmail.com" }]
