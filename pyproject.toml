@@ -8,12 +8,9 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools-git-versioning]
 enabled = true
 
-[tool.setuptools]
-packages = ["llm_cgr"]
-
 [project]
 name = "llm_cgr"
-# version = "0.0.0"
+# version = "0.0.2"
 dynamic = ["version", "dependencies", "optional-dependencies"]
 description = "Utilities for use when research code-generation by LLMs."
 readme = "README.md"
