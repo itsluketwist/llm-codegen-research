@@ -7,6 +7,7 @@ from llm_cgr.api.completion import (
 )
 from llm_cgr.api.prompts import BASE_SYSTEM_PROMPT
 from llm_cgr.api.protocol import CompletionProtocol
+from llm_cgr.md import Markdown
 
 
 def get_client(model: str) -> CompletionProtocol:
@@ -25,8 +26,8 @@ def get_client(model: str) -> CompletionProtocol:
 def quick_complete(
     user: str,
     system: str = BASE_SYSTEM_PROMPT,
-    model: str = "gpt-4o",
-) -> str:
+    model: str = "gpt-4o-mini",
+) -> Markdown:
     """
     Simple function to quickly prompt a model for a response.
     """
@@ -37,4 +38,4 @@ def quick_complete(
         system=system,
         model=model,
     )
-    return result[0]
+    return Markdown(text=result[0])

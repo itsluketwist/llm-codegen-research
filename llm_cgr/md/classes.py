@@ -19,8 +19,13 @@ class CodeBlock:
         self.text = text.strip()
 
     def __repr__(self):
-        intro = f"CodeBlock {self.language}:"
-        return f"{intro}\n{'=' * len(intro)}\n\n{self.text}"
+        _language = f"language={self.language or 'unspecified'}"
+        _lines = f"lines={len(self.text.splitlines())}"
+        return f"{self.__class__.__name__}({_language}, {_lines})"
+
+    @property
+    def markdown(self):
+        return f"```{self.language or ''}\n{self.text}\n```"
 
 
 @dataclass
@@ -41,7 +46,10 @@ class Markdown:
         )
 
     def __repr__(self):
-        return "MarkdownResponse:\n\n" + "\n\n".join([repr(b) for b in self.blocks])
+        _lines = f"lines={len(self.text.splitlines())}"
+        _code_blocks = f"code_blocks={len(self.code_blocks)}"
+        _languages = f"languages={','.join(self.languages)}"
+        return f"{self.__class__.__name__}({_lines}, {_code_blocks}, {_languages})"
 
     @staticmethod
     def extract_code_blocks(response: str) -> list[CodeBlock]:
