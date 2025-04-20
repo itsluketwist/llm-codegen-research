@@ -13,7 +13,7 @@ newlint:
 	pre-commit autoupdate
 
 compile:
-	uv pip compile requirements.in -o requirements.txt
+	uv pip compile requirements.txt -o requirements.lock
 
 lint:
 	pre-commit run --all-files

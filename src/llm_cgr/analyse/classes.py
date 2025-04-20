@@ -2,7 +2,9 @@
 
 from dataclasses import dataclass
 
-from llm_cgr.md.regex import CODE_BLOCK_REGEX
+from llm_cgr.analyse.languages import analyse_code
+from llm_cgr.analyse.regexes import CODE_BLOCK_REGEX
+from llm_cgr.defaults import DEFAULT_CODEBLOCK_LANGUAGE
 
 
 @dataclass
@@ -13,10 +15,20 @@ class CodeBlock:
 
     language: str | None
     text: str
+    defined_funcs: list[str]
+    called_funcs: list[str]
+    packages: list[str]
+    imports: list[str]
 
     def __init__(self, language: str | None, text: str):
         self.language = language.strip().lower() if language else None
         self.text = text.strip()
+
+        code_data = analyse_code(code=self.text, language=self.language)
+        self.defined_funcs = code_data.defined_funcs
+        self.called_funcs = code_data.called_funcs
+        self.packages = code_data.packages
+        self.imports = code_data.imports
 
     def __repr__(self):
         _language = f"language={self.language or 'unspecified'}"
@@ -32,7 +44,7 @@ class CodeBlock:
 
 
 @dataclass
-class Markdown:
+class MarkdownResponse:
     """
     A class to hold a markdown response from an LLM as a series of text and code blocks.
     """
@@ -41,9 +53,20 @@ class Markdown:
     code_blocks: list[CodeBlock]
     languages: list[str]
 
-    def __init__(self, text: str):
+    def __init__(
+        self,
+        text: str,
+        default_codeblock_language: str | None = DEFAULT_CODEBLOCK_LANGUAGE,
+    ):
+        """
+        Initialise the MarkdownResponse object with the text and code blocks.
+        Use `codeblock_language` when no language is specified for a code block.
+        """
         self.text = text
-        self.code_blocks = self.extract_code_blocks(text)
+        self.code_blocks = self.extract_code_blocks(
+            response=text,
+            default_language=default_codeblock_language,
+        )
         self.languages = sorted(
             list({bl.language for bl in self.code_blocks if bl.language})
         )
@@ -58,13 +81,20 @@ class Markdown:
         return self.text
 
     @staticmethod
-    def extract_code_blocks(response: str) -> list[CodeBlock]:
+    def extract_code_blocks(
+        response: str,
+        default_language: str | None = DEFAULT_CODEBLOCK_LANGUAGE,
+    ) -> list[CodeBlock]:
         """
         Extract the code blocks from the markdown formatted text.
         """
-        matches = CODE_BLOCK_REGEX.findall(response)
+        matches = CODE_BLOCK_REGEX.findall(string=response)
         blocks = []
         for match in matches:
             language, text = match
-            blocks.append(CodeBlock(language=language, text=text))
+            blocks.append(
+                CodeBlock(
+                    language=language if language else default_language, text=text
+                )
+            )
         return blocks

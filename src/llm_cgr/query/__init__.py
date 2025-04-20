@@ -1,14 +1,15 @@
-from llm_cgr.api.api_utils import get_client, quick_complete
-from llm_cgr.api.completion import (
+from llm_cgr.query.api_utils import get_client, query_list, quick_complete
+from llm_cgr.query.completion import (
     AnthropicCompletionAPI,
     OpenAICompletionAPI,
     TogetherCompletionAPI,
 )
-from llm_cgr.api.protocol import CompletionProtocol
+from llm_cgr.query.protocol import CompletionProtocol
 
 
 __all__ = [
     "get_client",
+    "query_list",
     "quick_complete",
     "AnthropicCompletionAPI",
     "OpenAICompletionAPI",

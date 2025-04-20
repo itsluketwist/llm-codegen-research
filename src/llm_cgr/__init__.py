@@ -1,16 +1,19 @@
-from llm_cgr import api, md
-from llm_cgr.api import get_client, quick_complete
+from llm_cgr import analyse, query
+from llm_cgr.analyse import CodeBlock, CodeData, MarkdownResponse, analyse_code
 from llm_cgr.json_utils import read_json, save_json
-from llm_cgr.md import CodeBlock, Markdown
+from llm_cgr.query import get_client, query_list, quick_complete
 
 
 __all__ = [
-    "api",
-    "md",
-    "get_client",
-    "quick_complete",
+    "analyse",
+    "query",
+    "CodeBlock",
+    "CodeData",
+    "MarkdownResponse",
+    "analyse_code",
     "read_json",
     "save_json",
-    "CodeBlock",
-    "Markdown",
+    "get_client",
+    "query_list",
+    "quick_complete",
 ]
