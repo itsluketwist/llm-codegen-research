@@ -1,10 +1,10 @@
-from llm_cgr.analyse.classes import CodeBlock, MarkdownResponse
+from llm_cgr.analyse.classes import CodeBlock, Markdown
 from llm_cgr.analyse.languages import CodeData, analyse_code
 
 
 __all__ = [
     "CodeBlock",
-    "MarkdownResponse",
+    "Markdown",
     "CodeData",
     "analyse_code",
 ]

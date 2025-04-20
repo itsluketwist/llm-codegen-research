@@ -1,7 +1,7 @@
-from llm_cgr import MarkdownResponse
+from llm_cgr import Markdown
 
 
-TEST_RESPONSE = """
+TEST_LLM_RESPONSE = """
 Here's a Python solution to process some data and return an answer.
 
 ```python
@@ -32,15 +32,15 @@ python script.py
 """
 
 
-def test_markdown_response():
+def test_markdown():
     """
     Test the MarkdownResponse class, extracting and analysing multiple code blocks.
     """
     # parse the response
-    analysed = MarkdownResponse(text=TEST_RESPONSE)
+    analysed = Markdown(text=TEST_LLM_RESPONSE)
 
     # check initial properties
-    assert analysed.text == TEST_RESPONSE
+    assert analysed.text == TEST_LLM_RESPONSE
     assert len(analysed.code_blocks) == 3
     assert analysed.languages == ["bash", "python"]
 

@@ -44,7 +44,7 @@ class CodeBlock:
 
 
 @dataclass
-class MarkdownResponse:
+class Markdown:
     """
     A class to hold a markdown response from an LLM as a series of text and code blocks.
     """
