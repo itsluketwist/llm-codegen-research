@@ -77,6 +77,7 @@ def analyse_python_code(code: str) -> CodeData:
     analyser = PythonAnalyser()
     analyser.visit(tree)
     return CodeData(
+        valid=True,
         defined_funcs=analyser.defined_funcs,
         called_funcs=analyser.called_funcs,
         packages=analyser.packages,

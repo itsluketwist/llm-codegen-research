@@ -47,6 +47,7 @@ def test_markdown():
     # expected python code block
     python_code_one = analysed.code_blocks[0]
     assert python_code_one.language == "python"
+    assert python_code_one.valid is True
     assert python_code_one.defined_funcs == ["process_data"]
     assert python_code_one.called_funcs == ["get", "np.array", "np.process"]
     assert python_code_one.packages == ["numpy", "requests"]
@@ -60,6 +61,7 @@ def test_markdown():
     # unspecified code block defaults to python
     python_code_two = analysed.code_blocks[1]
     assert python_code_two.language == "python"
+    assert python_code_two.valid is True
     assert python_code_two.defined_funcs == []
     assert python_code_two.called_funcs == ["pd.read_csv"]
     assert python_code_two.packages == ["pandas"]
@@ -68,6 +70,7 @@ def test_markdown():
     # bash code block with no analysis
     bash_code = analysed.code_blocks[2]
     assert bash_code.language == "bash"
+    assert bash_code.valid is None
     assert bash_code.defined_funcs == []
     assert bash_code.called_funcs == []
     assert bash_code.packages == []

@@ -15,6 +15,7 @@ class CodeBlock:
 
     language: str | None
     text: str
+    valid: bool | None
     defined_funcs: list[str]
     called_funcs: list[str]
     packages: list[str]
@@ -25,6 +26,7 @@ class CodeBlock:
         self.text = text.strip()
 
         code_data = analyse_code(code=self.text, language=self.language)
+        self.valid = code_data.valid
         self.defined_funcs = code_data.defined_funcs
         self.called_funcs = code_data.called_funcs
         self.packages = code_data.packages

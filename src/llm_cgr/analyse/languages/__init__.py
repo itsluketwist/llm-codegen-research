@@ -6,10 +6,13 @@ def analyse_code(code: str, language: str | None) -> CodeData:
     """
     Analyse code based on the language.
     """
-    if language == "python":
-        return analyse_python_code(code=code)
-    else:
-        return CodeData()
+    try:
+        if language == "python":
+            return analyse_python_code(code=code)
+    except Exception as e:
+        print(f"Error analysing code: {e}")
+
+    return CodeData()
 
 
 __all__ = [
