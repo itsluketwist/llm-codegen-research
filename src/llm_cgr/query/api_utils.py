@@ -55,6 +55,13 @@ def query_list(
         model=model,
     )
 
+    # sometimes the LLM will return a code block with the list inside it
+    if _response.startswith("```python"):
+        _response = _response.split("```python")[1]
+    if _response.endswith("```"):
+        _response = _response.split("```")[0]
+    _response = _response.strip()
+
     try:
         _list = eval(_response)
     except Exception as e:
