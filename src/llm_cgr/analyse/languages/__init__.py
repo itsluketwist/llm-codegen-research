@@ -9,8 +9,11 @@ def analyse_code(code: str, language: str | None) -> CodeData:
     try:
         if language == "python":
             return analyse_python_code(code=code)
-    except Exception as e:
-        print(f"Error analysing code: {e}")
+    except Exception as exc:
+        return CodeData(
+            valid=False,
+            error=str(exc),
+        )
 
     return CodeData()
 

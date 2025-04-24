@@ -15,7 +15,8 @@ class CodeBlock:
 
     language: str | None
     text: str
-    valid: bool | None
+    valid: bool | None  # None if validity unknown, language not supported
+    error: str | None  # only set if not valid
     defined_funcs: list[str]
     called_funcs: list[str]
     packages: list[str]
@@ -27,6 +28,7 @@ class CodeBlock:
 
         code_data = analyse_code(code=self.text, language=self.language)
         self.valid = code_data.valid
+        self.error = code_data.error
         self.defined_funcs = code_data.defined_funcs
         self.called_funcs = code_data.called_funcs
         self.packages = code_data.packages
@@ -53,6 +55,7 @@ class Markdown:
 
     text: str
     code_blocks: list[CodeBlock]
+    code_errors: list[str]
     languages: list[str]
 
     def __init__(
@@ -69,6 +72,9 @@ class Markdown:
             response=text,
             default_language=default_codeblock_language,
         )
+        self.code_errors = [
+            f"{i}: {cb.error}" for i, cb in enumerate(self.code_blocks) if cb.error
+        ]
         self.languages = sorted(
             list({bl.language for bl in self.code_blocks if bl.language})
         )

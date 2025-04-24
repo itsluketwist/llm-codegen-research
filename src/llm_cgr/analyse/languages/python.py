@@ -59,7 +59,7 @@ class PythonAnalyser(ast.NodeVisitor):
         # save external packages
         # node.level is 0 for absolute imports, 1+ for relative imports
         if module and module not in PYTHON_STDLIB and node.level == 0:
-            self.packages.add(module)
+            self.packages.add(module.split(".")[0])
 
         # save all imports
         for alias in node.names:

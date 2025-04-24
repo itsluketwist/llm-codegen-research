@@ -9,6 +9,8 @@ import numpy as np
 from requests import get
 import json
 from collections import defaultdict
+from cryptography.fernet import Fernet
+import pandas.DataFrame
 
 def process_data(data):
     response = get("https://api.example.com/data")
@@ -29,6 +31,14 @@ Run some code:
 ```bash
 python script.py
 ```
+
+Some very bad python code:
+
+```python
+import problem
+
+problem.bad_brackets((()
+```
 """
 
 
@@ -41,20 +51,29 @@ def test_markdown():
 
     # check initial properties
     assert analysed.text == TEST_LLM_RESPONSE
-    assert len(analysed.code_blocks) == 3
+    assert len(analysed.code_blocks) == 4
+    assert analysed.code_errors == ["3: '(' was never closed (<unknown>, line 3)"]
     assert analysed.languages == ["bash", "python"]
 
     # expected python code block
     python_code_one = analysed.code_blocks[0]
     assert python_code_one.language == "python"
     assert python_code_one.valid is True
+    assert python_code_one.error is None
     assert python_code_one.defined_funcs == ["process_data"]
     assert python_code_one.called_funcs == ["get", "np.array", "np.process"]
-    assert python_code_one.packages == ["numpy", "requests"]
+    assert python_code_one.packages == [
+        "cryptography",
+        "numpy",
+        "pandas",
+        "requests",
+    ]
     assert python_code_one.imports == [
         "collections.defaultdict",
+        "cryptography.fernet.Fernet",
         "json",
         "numpy",
+        "pandas.DataFrame",
         "requests.get",
     ]
 
@@ -62,6 +81,7 @@ def test_markdown():
     python_code_two = analysed.code_blocks[1]
     assert python_code_two.language == "python"
     assert python_code_two.valid is True
+    assert python_code_two.error is None
     assert python_code_two.defined_funcs == []
     assert python_code_two.called_funcs == ["pd.read_csv"]
     assert python_code_two.packages == ["pandas"]
@@ -71,7 +91,18 @@ def test_markdown():
     bash_code = analysed.code_blocks[2]
     assert bash_code.language == "bash"
     assert bash_code.valid is None
+    assert bash_code.error is None
     assert bash_code.defined_funcs == []
     assert bash_code.called_funcs == []
     assert bash_code.packages == []
     assert bash_code.imports == []
+
+    # python code block with incorrect syntax
+    bad_code = analysed.code_blocks[3]
+    assert bad_code.language == "python"
+    assert bad_code.valid is False
+    assert bad_code.error == "'(' was never closed (<unknown>, line 3)"
+    assert bad_code.defined_funcs == []
+    assert bad_code.called_funcs == []
+    assert bad_code.packages == []
+    assert bad_code.imports == []
