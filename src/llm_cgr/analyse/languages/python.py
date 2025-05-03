@@ -48,7 +48,7 @@ class PythonAnalyser(ast.NodeVisitor):
             # save external packages
             top_level = alias.name.split(".")[0]
             if top_level not in PYTHON_STDLIB:
-                self.packages.add(top_level)
+                self.packages.add(top_level.lower())  # lowercase for consistency
 
         self.generic_visit(node)
 
