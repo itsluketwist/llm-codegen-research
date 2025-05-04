@@ -15,12 +15,12 @@ def get_client(model: str) -> CompletionProtocol:
     Initialise the correct completion interface for the given model.
     """
     if "claude" in model:
-        return AnthropicCompletionAPI()
+        return AnthropicCompletionAPI(model=model)
 
     if "gpt" in model or "o1" in model:
-        return OpenAICompletionAPI()
+        return OpenAICompletionAPI(model=model)
 
-    return TogetherCompletionAPI()
+    return TogetherCompletionAPI(model=model)
 
 
 def quick_complete(
@@ -36,7 +36,6 @@ def quick_complete(
     result = client.complete(
         user=user,
         system=system,
-        model=model,
     )
     return result[0]
 

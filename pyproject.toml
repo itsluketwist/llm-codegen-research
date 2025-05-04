@@ -10,7 +10,7 @@ enabled = true
 
 [project]
 name = "llm_cgr"
-version = "0.0.6"
+version = "0.0.7"
 dynamic = ["dependencies", "optional-dependencies"]  # todo: dynamic "version" later
 description = "Utilities for use when research code-generation by LLMs."
 readme = "README.md"

@@ -12,7 +12,7 @@ class CompletionProtocol(Protocol):
         self,
         user: str,
         system: str,
-        model: str,
+        model: str | None = None,
         n: int = 1,
         temperature: float | None = None,
         max_tokens: int | None = None,

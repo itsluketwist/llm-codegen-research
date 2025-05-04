@@ -10,14 +10,15 @@ class OpenAICompletionAPI:
     Class to access to OpenAI's API.
     """
 
-    def __init__(self):
+    def __init__(self, model: str | None = None) -> None:
+        self._model = model
         self._client = openai.OpenAI()
 
     def complete(
         self,
         user: str,
         system: str,
-        model: str,
+        model: str | None = None,
         n: int = 1,
         temperature: float | None = None,
         max_tokens: int | None = None,
@@ -30,7 +31,7 @@ class OpenAICompletionAPI:
         The textual response to the prompt.
         """
         response = self._client.chat.completions.create(
-            model=model,
+            model=model or self._model,
             messages=[
                 {"role": "system", "content": system},
                 {"role": "user", "content": user},
@@ -48,20 +49,21 @@ class TogetherCompletionAPI:
     Class to access TogetherAI's API.
     """
 
-    def __init__(self):
+    def __init__(self, model: str | None = None) -> None:
+        self._model = model
         self._client = together.Together()
 
     def complete(
         self,
         user: str,
         system: str,
-        model: str,
+        model: str | None = None,
         n: int = 1,
         temperature: float | None = None,
         max_tokens: int | None = None,
     ) -> list[str]:
         response = self._client.chat.completions.create(
-            model=model,
+            model=model or self._model,
             system=system,
             messages=[
                 {"role": "system", "content": system},
@@ -80,20 +82,21 @@ class AnthropicCompletionAPI:
     Class to access Anthropic's Claude API.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, model: str | None = None) -> None:
+        self._model = model
         self._client = anthropic.Anthropic()
 
     def complete(
         self,
         user: str,
         system: str,
-        model: str,
+        model: str | None = None,
         n: int = 1,
         temperature: float | None = None,
         max_tokens: int | None = None,
     ) -> list[str]:
         response = self._client.messages.create(
-            model=model,
+            model=model or self._model,
             temperature=temperature or anthropic.NOT_GIVEN,
             system=system,
             messages=[
