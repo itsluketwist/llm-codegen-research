@@ -106,3 +106,13 @@ class Markdown:
                 )
             )
         return blocks
+
+    def first_code_block(self, language: str) -> CodeBlock | None:
+        """
+        Return the first code block of a certain language in the response.
+        """
+        for block in self.code_blocks:
+            if block.language == language:
+                return block
+
+        return None
