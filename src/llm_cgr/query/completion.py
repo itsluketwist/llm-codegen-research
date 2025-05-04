@@ -4,6 +4,8 @@ import anthropic
 import openai
 import together
 
+from llm_cgr.query.prompts import BASE_SYSTEM_PROMPT
+
 
 class OpenAICompletionAPI:
     """
@@ -17,7 +19,7 @@ class OpenAICompletionAPI:
     def complete(
         self,
         user: str,
-        system: str,
+        system: str = BASE_SYSTEM_PROMPT,
         model: str | None = None,
         n: int = 1,
         temperature: float | None = None,
@@ -56,7 +58,7 @@ class TogetherCompletionAPI:
     def complete(
         self,
         user: str,
-        system: str,
+        system: str = BASE_SYSTEM_PROMPT,
         model: str | None = None,
         n: int = 1,
         temperature: float | None = None,
@@ -89,7 +91,7 @@ class AnthropicCompletionAPI:
     def complete(
         self,
         user: str,
-        system: str,
+        system: str = BASE_SYSTEM_PROMPT,
         model: str | None = None,
         n: int = 1,
         temperature: float | None = None,

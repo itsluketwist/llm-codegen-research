@@ -2,6 +2,8 @@
 
 from typing import Protocol
 
+from llm_cgr.query.prompts import BASE_SYSTEM_PROMPT
+
 
 class CompletionProtocol(Protocol):
     """
@@ -11,7 +13,7 @@ class CompletionProtocol(Protocol):
     def complete(
         self,
         user: str,
-        system: str,
+        system: str = BASE_SYSTEM_PROMPT,
         model: str | None = None,
         n: int = 1,
         temperature: float | None = None,
