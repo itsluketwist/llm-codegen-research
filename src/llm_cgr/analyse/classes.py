@@ -22,17 +22,36 @@ class CodeBlock:
     packages: list[str]
     imports: list[str]
 
-    def __init__(self, language: str | None, text: str):
+    def __init__(
+        self,
+        language: str | None,
+        text: str,
+        default_language: str | None = DEFAULT_CODEBLOCK_LANGUAGE,
+    ):
         self.language = language.strip().lower() if language else None
         self.text = text.strip()
 
-        code_data = analyse_code(code=self.text, language=self.language)
-        self.valid = code_data.valid
-        self.error = code_data.error
-        self.defined_funcs = code_data.defined_funcs
-        self.called_funcs = code_data.called_funcs
-        self.packages = code_data.packages
-        self.imports = code_data.imports
+        code_data = analyse_code(
+            code=self.text, language=self.language or default_language
+        )
+
+        if self.language is None and not code_data.valid:
+            # if we hit errors after defaulting the language, ignore the results!
+            self.valid = None
+            self.error = None
+            self.defined_funcs = []
+            self.called_funcs = []
+            self.packages = []
+            self.imports = []
+
+        else:
+            self.language = self.language or default_language
+            self.valid = code_data.valid
+            self.error = code_data.error
+            self.defined_funcs = code_data.defined_funcs
+            self.called_funcs = code_data.called_funcs
+            self.packages = code_data.packages
+            self.imports = code_data.imports
 
     def __repr__(self):
         _language = f"language={self.language or 'unspecified'}"
@@ -102,7 +121,9 @@ class Markdown:
             language, text = match
             blocks.append(
                 CodeBlock(
-                    language=language if language else default_language, text=text
+                    language=language if language else None,
+                    text=text,
+                    default_language=default_language,
                 )
             )
         return blocks

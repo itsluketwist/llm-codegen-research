@@ -39,6 +39,12 @@ import problem
 
 problem.bad_brackets((()
 ```
+
+Some very bad unknown code:
+
+```
+for import xxx)[
+```
 """
 
 
@@ -51,7 +57,7 @@ def test_markdown():
 
     # check initial properties
     assert analysed.text == TEST_LLM_RESPONSE
-    assert len(analysed.code_blocks) == 4
+    assert len(analysed.code_blocks) == 5
     assert analysed.code_errors == ["3: '(' was never closed (<unknown>, line 3)"]
     assert analysed.languages == ["bash", "python"]
 
@@ -106,3 +112,14 @@ def test_markdown():
     assert bad_code.called_funcs == []
     assert bad_code.packages == []
     assert bad_code.imports == []
+
+    # unknown code block
+    unknown_code = analysed.code_blocks[4]
+    assert unknown_code.text == "for import xxx)["
+    assert unknown_code.language is None
+    assert unknown_code.valid is None
+    assert unknown_code.error is None
+    assert unknown_code.defined_funcs == []
+    assert unknown_code.called_funcs == []
+    assert unknown_code.packages == []
+    assert unknown_code.imports == []
