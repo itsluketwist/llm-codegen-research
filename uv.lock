@@ -509,7 +509,7 @@ wheels = [
 ]
 
 [[package]]
-name = "llm-cgr"
+name = "llm-codegen-research"
 source = { editable = "." }
 dependencies = [
     { name = "anthropic" },

@@ -19,7 +19,7 @@ lint:
 	pre-commit run --all-files
 
 test:
-	pytest tests
+	uv run pytest
 
 coverage:
-	pytest --cov=src/ tests/
+	uv run pytest --cov=src/

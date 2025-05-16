@@ -14,7 +14,7 @@ def save_json(
         json.dump(obj=data, fp=f, indent=4)
 
 
-def read_json(
+def load_json(
     file_path: str,
 ) -> dict | list:
     """
