@@ -1,7 +1,10 @@
 """All prompts used in the project are defined here."""
 
 # the default system prompt to be used across tasks
-BASE_SYSTEM_PROMPT = "You are a helpful and knowledgeable code assistant!"
+BASE_SYSTEM_PROMPT = "You are a helpful assistant."
+
+# the default system prompt to be used across coding tasks
+CODE_SYSTEM_PROMPT = "You are a helpful and knowledgeable code assistant!"
 
 # the system prompt to be used for generating lists of words
 LIST_SYSTEM_PROMPT = (

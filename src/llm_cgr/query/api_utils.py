@@ -1,43 +1,64 @@
-"""API utilities for interfacing with the completion models."""
+"""API utilities for interfacing with the generation models."""
+
+from typing import Literal
 
 from llm_cgr.defaults import DEFAULT_MODEL
-from llm_cgr.query.completion import (
-    AnthropicCompletionAPI,
-    OpenAICompletionAPI,
-    TogetherCompletionAPI,
+from llm_cgr.query.generate import (
+    AnthropicGenerationAPI,
+    OpenAIGenerationAPI,
+    TogetherGenerationAPI,
 )
-from llm_cgr.query.prompts import BASE_SYSTEM_PROMPT, LIST_SYSTEM_PROMPT
-from llm_cgr.query.protocol import CompletionProtocol
+from llm_cgr.query.prompts import (
+    BASE_SYSTEM_PROMPT,
+    CODE_SYSTEM_PROMPT,
+    LIST_SYSTEM_PROMPT,
+)
+from llm_cgr.query.protocol import GenerationProtocol
 
 
-def get_client(model: str) -> CompletionProtocol:
+def get_client(
+    model: str,
+    type: Literal["base", "code", "list"] | None = None,
+) -> GenerationProtocol:
     """
-    Initialise the correct completion interface for the given model.
+    Initialise the correct generation interface for the given model.
     """
+    _system = None
+    match type:
+        case "base":
+            _system = BASE_SYSTEM_PROMPT
+        case "code":
+            _system = CODE_SYSTEM_PROMPT
+        case "list":
+            _system = LIST_SYSTEM_PROMPT
+
     if "claude" in model:
-        return AnthropicCompletionAPI(model=model)
+        return AnthropicGenerationAPI(model=model, system=_system)
 
     if "gpt" in model or "o1" in model:
-        return OpenAICompletionAPI(model=model)
+        return OpenAIGenerationAPI(model=model, system=_system)
 
-    return TogetherCompletionAPI(model=model)
+    return TogetherGenerationAPI(model=model, system=_system)
 
 
-def quick_complete(
+def quick_generate(
     user: str,
-    system: str = BASE_SYSTEM_PROMPT,
+    type: Literal["base", "code", "list"] | None = None,
     model: str = DEFAULT_MODEL,
+    system: str | None = None,
+    temperature: float | None = None,
 ) -> str:
     """
     Simple function to quickly prompt a model for a response.
     """
-    client = get_client(model=model)
+    client = get_client(model=model, type=type)
 
-    result = client.complete(
+    [result] = client.generate(
         user=user,
         system=system,
+        temperature=temperature,
     )
-    return result[0]
+    return result
 
 
 def query_list(
@@ -48,7 +69,7 @@ def query_list(
     """
     Simple function to quickly prompt a model for a list of words.
     """
-    _response = quick_complete(
+    _response = quick_generate(
         user=user,
         system=system,
         model=model,

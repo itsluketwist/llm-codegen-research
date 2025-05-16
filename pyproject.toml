@@ -10,23 +10,30 @@ enabled = true
 
 [project]
 name = "llm_cgr"
-version = "0.1.1"
-dynamic = ["dependencies", "optional-dependencies"]  # todo: dynamic "version" later
+version = "0.2.0"  # todo: dynamic = ["version"]
 description = "Utilities for use when research code-generation by LLMs."
 readme = "README.md"
 authors = [{ name = "Lukas Twist", email = "itsluketwist@gmail.com" }]
-license = { file = "LICENSE" }
+license-files = ["LICENSE"]
 classifiers = [
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
 ]
 keywords = ["llm", "code-generation", "research", "prompting", "nlp"]
 requires-python = ">=3.10"
-
-[tool.setuptools.dynamic]
-dependencies = {file = ["requirements.lock"]}
-optional-dependencies.dev = { file = ["requirements-dev.txt"] }
+dependencies = [
+    "anthropic>=0.49.0",
+    "openai>=1.78.1",
+    "together>=1.5.8",
+]
 
 [project.urls]
 Homepage = "https://github.com/itsluketwist/llm-codegen-research"
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.2.0",
+    "pytest>=8.3.5",
+    "pytest-cov>=6.1.1",
+    "uv>=0.7.4",
+]
