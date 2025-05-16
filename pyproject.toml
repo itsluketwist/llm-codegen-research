@@ -9,7 +9,7 @@ build-backend = "setuptools.build_meta"
 enabled = true
 
 [project]
-name = "llm_cgr"
+name = "llm-codegen-research"
 dynamic = ["version"]
 description = "Utilities for use when research code-generation by LLMs."
 readme = "README.md"
