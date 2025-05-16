@@ -42,10 +42,10 @@ markdown = Markdown(text=response)
 
 ## *installation*
 
-Install directly from GitHub, using pip:
+Install directly from PyPI, using pip:
 
 ```shell
-pip install git+https://github.com/itsluketwist/llm-codegen-research
+pip install llm-codegen-research
 ```
 
 ## *development*

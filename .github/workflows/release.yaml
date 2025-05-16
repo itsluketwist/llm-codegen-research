@@ -23,5 +23,8 @@ jobs:
       - name: 2. Configure uv...
         uses: astral-sh/setup-uv@v6
 
-      - name: 3. Publish package to PyPI
+      - name: 3. Build the package...
+        run: uv build
+
+      - name: 4. Publish package to PyPI
         run: uv publish --trusted-publishing always
