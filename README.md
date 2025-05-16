@@ -56,38 +56,29 @@ Clone the repository code:
 git clone https://github.com/itsluketwist/llm-codegen-research.git
 ```
 
-Once cloned, install the package locally in a virtual environment:
+We use [`uv`](https://astral.sh/blog/uv) for project management.
+Once cloned, create a virtual environment and install uv and the project:
 
 ```shell
 python -m venv .venv
 
 . .venv/bin/activate
 
-pip install -e ".[dev]"
+pip install uv
+
+uv sync
 ```
 
-Install and use pre-commit to ensure code is in a good state (uses [ruff](https://astral.sh/ruff)):
+Use `make` commands to lint and test:
 
 ```shell
-pre-commit install
+make lint
 
-pre-commit autoupdate
-
-pre-commit run --all-files
+make test
 ```
 
-Dependencies are managed with [`uv`](https://astral.sh/blog/uv), add new packages to `requirements.txt`, then install `uv` and compile:
+Use `uv` to add new dependencies into the project and `uv.lock`:
 
 ```shell
-uv pip compile requirements.txt -o requirements.lock
-```
-
-## *testing*
-
-*todos*
-
-Run the test suite using:
-
-```shell
-pytest .
+uv add openai
 ```
