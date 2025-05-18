@@ -33,9 +33,9 @@ A collection of methods and classes I repeatedly use when conducting research on
 Covers both prompting various LLMs, and analysing the markdown responses.
 
 ```python
-from llm_cgr import quick_generate, Markdown
+from llm_cgr import generate, Markdown
 
-response = quick_generate("Write python code to generate the nth fibonacci number.")
+response = generate("Write python code to generate the nth fibonacci number.")
 
 markdown = Markdown(text=response)
 ```

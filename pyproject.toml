@@ -11,7 +11,7 @@ enabled = true
 [project]
 name = "llm-codegen-research"
 dynamic = ["version"]
-description = "Utilities for use when research code-generation by LLMs."
+description = "Useful classes and methods for researching code-generation by LLMs."
 readme = "README.md"
 authors = [{ name = "Lukas Twist", email = "itsluketwist@gmail.com" }]
 license-files = ["LICENSE"]

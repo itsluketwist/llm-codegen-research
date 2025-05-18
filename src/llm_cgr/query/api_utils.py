@@ -41,12 +41,13 @@ def get_client(
     return TogetherGenerationAPI(model=model, system=_system)
 
 
-def quick_generate(
+def generate(
     user: str,
     type: Literal["base", "code", "list"] | None = None,
     model: str = DEFAULT_MODEL,
     system: str | None = None,
     temperature: float | None = None,
+    **generate_kwargs,
 ) -> str:
     """
     Simple function to quickly prompt a model for a response.
@@ -57,6 +58,7 @@ def quick_generate(
         user=user,
         system=system,
         temperature=temperature,
+        **generate_kwargs,
     )
     return result
 
@@ -69,7 +71,7 @@ def query_list(
     """
     Simple function to quickly prompt a model for a list of words.
     """
-    _response = quick_generate(
+    _response = generate(
         user=user,
         system=system,
         model=model,
