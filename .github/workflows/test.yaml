@@ -29,4 +29,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: 3. Run the tests...
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          TOGETHER_API_KEY: ${{ secrets.TOGETHER_API_KEY }}
         run: uv run pytest
