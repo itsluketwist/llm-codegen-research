@@ -26,11 +26,22 @@
     </a>
 </div>
 
-
-## *usage*
+## *about*
 
 A collection of methods and classes I repeatedly use when conducting research on LLM code-generation.
 Covers both prompting various LLMs, and analysing the markdown responses.
+
+## *usage*
+
+First configure environment vairables for the APIs you want to use:
+
+```bash
+export OPENAI_API_KEY=...
+export ANTHROPIC_API_KEY=...
+export TOGETHER_API_KEY=...
+```
+
+You can get a quick response from an LLM:
 
 ```python
 from llm_cgr import generate, Markdown
@@ -38,6 +49,30 @@ from llm_cgr import generate, Markdown
 response = generate("Write python code to generate the nth fibonacci number.")
 
 markdown = Markdown(text=response)
+```
+
+Or define a client to generate multiple repsonses, or have a chat interaction:
+
+```python
+from llm_cgr import get_llm
+
+# create the llm
+llm = get_llm(
+    model="gpt-4.1-mini",
+    system="You're a really funny comedian.",
+)
+
+# get multiple responses and see the difference
+responses = llm.generate(
+    user="Tell me a joke I haven't heard before!",
+    samples=3,
+)
+print(responses)
+
+# or have a multi-prompt chat interaction
+llm.chat(user="Tell me a knock knock joke?")
+llm.chat(user="Wait, I'm meant to say who's there!")
+print(llm.history)
 ```
 
 ## *installation*

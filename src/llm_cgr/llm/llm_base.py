@@ -60,7 +60,7 @@ class Base_LLM(ABC):
             # initialise the history
             self._history = self._build_input(
                 user=user,
-                system=system,
+                system=system or self._system,
             )
         else:
             # or add the new message

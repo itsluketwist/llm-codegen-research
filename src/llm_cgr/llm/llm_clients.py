@@ -149,8 +149,6 @@ class Anthropic_LLM(Base_LLM):
         Requires the ANTHROPIC_API_KEY environment variable to be set.
         """
         super().__init__(model=model, system=system)
-        self._model = model
-        self._system = system or anthropic.NOT_GIVEN
         self._client = anthropic.Anthropic()
 
     def _build_message(
