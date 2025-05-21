@@ -95,7 +95,7 @@ class TogetherAI_LLM(Base_LLM):
         Requires the TOGETHER_API_KEY environment variable to be set.
         """
         super().__init__(model=model, system=system)
-        self._client = together.TogetherAI()
+        self._client = together.Together()
 
     def _build_message(
         self,

@@ -31,6 +31,14 @@
 A collection of methods and classes I repeatedly use when conducting research on LLM code-generation.
 Covers both prompting various LLMs, and analysing the markdown responses.
 
+## *installation*
+
+Install directly from PyPI, using pip:
+
+```shell
+pip install llm-codegen-research
+```
+
 ## *usage*
 
 First configure environment vairables for the APIs you want to use:
@@ -73,14 +81,6 @@ print(responses)
 llm.chat(user="Tell me a knock knock joke?")
 llm.chat(user="Wait, I'm meant to say who's there!")
 print(llm.history)
-```
-
-## *installation*
-
-Install directly from PyPI, using pip:
-
-```shell
-pip install llm-codegen-research
 ```
 
 ## *development*

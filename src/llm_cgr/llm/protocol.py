@@ -1,6 +1,6 @@
 """Protocol for the completion API of an LLM service."""
 
-from typing import Protocol
+from typing import Any, Protocol
 
 
 class GenerationProtocol(Protocol):
@@ -27,4 +27,8 @@ class GenerationProtocol(Protocol):
         temperature: float | None = None,
         max_tokens: int | None = None,
     ) -> str:
+        pass
+
+    @property
+    def history(self) -> list[dict[str, Any]]:
         pass

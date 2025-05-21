@@ -13,6 +13,9 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    environment:
+      name: test
+
     strategy:
       matrix:
         # test on the supported python version and the newest
@@ -32,4 +35,5 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           TOGETHER_API_KEY: ${{ secrets.TOGETHER_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: uv run pytest

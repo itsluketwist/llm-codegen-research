@@ -1,3 +1,5 @@
+"""Test the analyse module."""
+
 from llm_cgr import Markdown
 
 
