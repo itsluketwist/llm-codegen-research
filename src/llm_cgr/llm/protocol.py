@@ -18,3 +18,13 @@ class GenerationProtocol(Protocol):
         max_tokens: int | None = None,
     ) -> list[str]:
         pass
+
+    def chat(
+        self,
+        user: str,
+        system: str | None = None,
+        model: str | None = None,
+        temperature: float | None = None,
+        max_tokens: int | None = None,
+    ) -> str:
+        pass

@@ -11,3 +11,9 @@ LIST_SYSTEM_PROMPT = (
     "You are a helpful assistant that provides lists of words.\n"
     "You only respond in correctly formatted python lists, containing only strings."
 )
+
+# the system prompt to be used for generating a boolean value from the input
+BOOL_SYSTEM_PROMPT = (
+    "You are a helpful assistant that provides boolean values.\n"
+    "You only respond in python boolean values, True or False, only, and nothing else."
+)
