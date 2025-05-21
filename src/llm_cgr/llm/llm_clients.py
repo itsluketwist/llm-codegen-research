@@ -16,7 +16,7 @@ def get_llm(
     system: str | None = None,
 ) -> GenerationProtocol:
     """
-    Initialise the correct generation interface for the given model.
+    Initialise the correct LLM client for the given model.
     """
     if "claude" in model:
         return Anthropic_LLM(model=model, system=system)

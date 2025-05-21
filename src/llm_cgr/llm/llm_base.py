@@ -12,10 +12,12 @@ class Base_LLM(ABC):
         model: str | None = None,
         system: str | None = None,
     ) -> None:
+        """
+        Initialise the LLM client.
+        """
         self._model = model
         self._system = system
         self._history: list[dict[str, Any]] | None = None
-        self._chat_kwargs: list | None = None
 
     def generate(
         self,
@@ -30,6 +32,7 @@ class Base_LLM(ABC):
         Generate a model response from the LLMs API.
         """
         messages = self._build_input(user=user, system=system)
+
         _generations = []
         for _ in range(samples):
             response = self._get_response(
@@ -51,7 +54,7 @@ class Base_LLM(ABC):
         max_tokens: int | None = None,
     ) -> str:
         """
-        Generate a model response from the OpenAI API.
+        Generate a model response from the LLMs API, in the ongoing chat.
         """
         if self._history is None:
             # initialise the history
@@ -88,12 +91,12 @@ class Base_LLM(ABC):
     @property
     def history(self) -> list[dict[str, Any]]:
         """
-        Get the history of the chat.
+        Get the chat history for this session.
         """
         return self._history or []
 
     @abstractmethod
-    def _build_message(  # OVERRIDE
+    def _build_message(
         self,
         role: str,
         content: str,
@@ -104,18 +107,18 @@ class Base_LLM(ABC):
         pass
 
     @abstractmethod
-    def _build_input(  # OVERRIDE
+    def _build_input(
         self,
         user: str,
         system: str | None = None,
     ) -> list[dict[str, Any]]:
         """
-        Build the full LLM input, with system and user messages.
+        Build the full LLM input, with system and user messages if needed.
         """
         pass
 
     @abstractmethod
-    def _get_response(  # OVERRIDE
+    def _get_response(
         self,
         input: list[dict[str, Any]],
         system: str | None = None,
