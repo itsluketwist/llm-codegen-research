@@ -16,9 +16,15 @@ def save_json(
 
 def load_json(
     file_path: str,
-) -> dict | list:
+) -> dict:
     """
-    Utility to load python dictionary or list from a json file.
+    Utility to load a python dictionary or list from a json file.
     """
     with open(file_path, mode="r", encoding="utf-8") as f:
-        return json.load(fp=f)
+        _json = json.load(fp=f)
+
+    if isinstance(_json, list):
+        # always return a dict
+        return {"data": _json}
+
+    return _json
