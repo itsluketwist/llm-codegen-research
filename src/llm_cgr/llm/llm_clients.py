@@ -72,9 +72,13 @@ class OpenAI_LLM(Base_LLM):
         max_tokens: int | None = None,
     ) -> str:
         """Generate a model response from the OpenAI API."""
+        _model = model or self._model
+        if _model is None:
+            raise ValueError("Model must be specified for OpenAI API.")
+
         response = self._client.responses.create(
             input=input,
-            model=model or self._model,
+            model=_model,
             temperature=temperature or openai.NOT_GIVEN,
             max_output_tokens=max_tokens or openai.NOT_GIVEN,
         )
@@ -126,8 +130,12 @@ class TogetherAI_LLM(Base_LLM):
         max_tokens: int | None = None,
     ) -> str:
         """Generate a model response from the TogetherAI API."""
+        _model = model or self._model
+        if _model is None:
+            raise ValueError("Model must be specified for TogetherAI API.")
+
         response = self._client.chat.completions.create(
-            model=model or self._model,
+            model=_model,
             messages=input,
             temperature=temperature,
             max_tokens=max_tokens,
@@ -184,8 +192,12 @@ class Anthropic_LLM(Base_LLM):
         max_tokens: int | None = None,
     ) -> str:
         """Generate a model response from the Anthropic API."""
+        _model = model or self._model
+        if _model is None:
+            raise ValueError("Model must be specified for Anthropic Claude API.")
+
         response = self._client.messages.create(
-            model=model or self._model,
+            model=_model,
             system=system or self._system or anthropic.NOT_GIVEN,
             messages=input,
             temperature=temperature or anthropic.NOT_GIVEN,
