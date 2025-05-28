@@ -28,3 +28,15 @@ def load_json(
         return {"data": _json}
 
     return _json
+
+
+def load_jsonl(
+    file_path: str,
+) -> list:
+    """
+    Utility to load a python dictionary or list from a json lines file.
+    """
+    with open(file_path, mode="r", encoding="utf-8") as f:
+        _json = [json.loads(line) for line in f]
+
+    return _json
