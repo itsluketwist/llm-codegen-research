@@ -14,6 +14,21 @@ def save_json(
         json.dump(obj=data, fp=f, indent=4)
 
 
+def save_jsonl(
+    data: dict | list,
+    file_path: str,
+):
+    """
+    Utility to save python dictionary or list to a json lines file.
+    """
+    with open(file_path, mode="w", encoding="utf-8") as f:
+        if isinstance(data, dict):
+            data = [data]
+        for item in data:
+            json.dump(obj=item, fp=f)
+            f.write("\n")
+
+
 def load_json(
     file_path: str,
 ) -> dict:

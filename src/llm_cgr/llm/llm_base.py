@@ -29,7 +29,7 @@ class Base_LLM(ABC):
         max_tokens: int | None = None,
     ) -> list[str]:
         """
-        Generate a model response from the LLMs API.
+        Generate model responses from the LLMs API.
         """
         messages = self._build_input(user=user, system=system)
 
@@ -104,7 +104,6 @@ class Base_LLM(ABC):
         """
         Build an LLM input message.
         """
-        pass
 
     @abstractmethod
     def _build_input(
@@ -115,7 +114,6 @@ class Base_LLM(ABC):
         """
         Build the full LLM input, with system and user messages if needed.
         """
-        pass
 
     @abstractmethod
     def _get_response(
@@ -131,4 +129,3 @@ class Base_LLM(ABC):
 
         Returns the text response to the prompt.
         """
-        pass

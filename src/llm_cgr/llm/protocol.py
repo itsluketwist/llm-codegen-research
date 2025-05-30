@@ -17,7 +17,9 @@ class GenerationProtocol(Protocol):
         temperature: float | None = None,
         max_tokens: int | None = None,
     ) -> list[str]:
-        pass
+        """
+        Generate model responses from the LLMs API.
+        """
 
     def chat(
         self,
@@ -27,8 +29,12 @@ class GenerationProtocol(Protocol):
         temperature: float | None = None,
         max_tokens: int | None = None,
     ) -> str:
-        pass
+        """
+        Generate a model response from the LLMs API, in the ongoing chat.
+        """
 
     @property
     def history(self) -> list[dict[str, Any]]:
-        pass
+        """
+        Get the chat history for this session.
+        """

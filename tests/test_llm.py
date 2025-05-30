@@ -1,6 +1,16 @@
 """Test the llm module."""
 
-from llm_cgr import generate, generate_bool, generate_list, get_llm
+import pytest
+
+from llm_cgr import (
+    Anthropic_LLM,
+    OpenAI_LLM,
+    TogetherAI_LLM,
+    generate,
+    generate_bool,
+    generate_list,
+    get_llm,
+)
 
 
 def test_generate(model):
@@ -66,3 +76,59 @@ def test_chat_flow(model):
 
     assert history[3]["role"] == "assistant"
     assert len(history[3]["content"]) > 0
+
+
+def test_no_model():
+    """
+    Test the get_llm function without a model.
+    """
+    llm = OpenAI_LLM()
+    with pytest.raises(ValueError, match="Model must be specified for OpenAI API."):
+        llm.generate(user="What is the capital of Denmark?")
+
+    llm = TogetherAI_LLM()
+    with pytest.raises(ValueError, match="Model must be specified for TogetherAI API."):
+        llm.generate(user="What is the capital of Canada?")
+
+    llm = Anthropic_LLM()
+    with pytest.raises(
+        ValueError, match="Model must be specified for Anthropic Claude API."
+    ):
+        llm.generate(user="What is the capital of Portugal?")
+
+
+def test_build_input():
+    """
+    Test the _build_input method.
+    """
+    llm = OpenAI_LLM()
+    input_data = llm._build_input(user="What is the capital of Denmark?")
+    assert isinstance(input_data, list)
+    assert len(input_data) == 1
+    assert input_data[0] == {
+        "role": "user",
+        "content": "What is the capital of Denmark?",
+    }
+
+    llm = TogetherAI_LLM()
+    input_data = llm._build_input(user="What is the capital of Canada?")
+    assert isinstance(input_data, list)
+    assert len(input_data) == 1
+    assert input_data[0] == {
+        "role": "user",
+        "content": "What is the capital of Canada?",
+    }
+
+    llm = Anthropic_LLM()
+    input_data = llm._build_input(user="What is the capital of Portugal?")
+    assert isinstance(input_data, list)
+    assert len(input_data) == 1
+    assert input_data[0] == {
+        "role": "user",
+        "content": [
+            {
+                "type": "text",
+                "text": "What is the capital of Portugal?",
+            }
+        ],
+    }

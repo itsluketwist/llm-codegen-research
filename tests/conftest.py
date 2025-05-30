@@ -1,5 +1,8 @@
 """Fixtures used for testing the project."""
 
+import shutil
+import tempfile
+
 import pytest
 
 
@@ -18,3 +21,18 @@ def model(request):
     Fixture to provide different models for testing.
     """
     return request.param
+
+
+@pytest.fixture
+def temp_dir():
+    """
+    Fixture to create a temporary directory for testing.
+
+    Yields the path to the temporary directory.
+    """
+    path = tempfile.mkdtemp()  # create
+    try:
+        yield path
+
+    finally:
+        shutil.rmtree(path)  # cleanup

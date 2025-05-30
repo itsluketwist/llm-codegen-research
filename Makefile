@@ -23,3 +23,6 @@ test:
 
 coverage:
 	uv run pytest --cov=src/
+
+report:
+	uv run pytest --cov=src/ --cov-report term-missing
