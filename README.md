@@ -4,6 +4,7 @@
 ![lint code workflow](https://github.com/itsluketwist/llm-codegen-research/actions/workflows/lint.yaml/badge.svg)
 ![test code workflow](https://github.com/itsluketwist/llm-codegen-research/actions/workflows/test.yaml/badge.svg)
 ![release workflow](https://github.com/itsluketwist/llm-codegen-research/actions/workflows/release.yaml/badge.svg)
+![test coverage](coverage-badge.svg)
 
 
 <div>

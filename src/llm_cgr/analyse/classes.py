@@ -19,6 +19,7 @@ class CodeBlock:
     error: str | None  # only set if not valid
     defined_funcs: list[str]
     called_funcs: list[str]
+    stdlibs: list[str]
     packages: list[str]
     imports: list[str]
 
@@ -41,6 +42,7 @@ class CodeBlock:
             self.error = None
             self.defined_funcs = []
             self.called_funcs = []
+            self.stdlibs = []
             self.packages = []
             self.imports = []
 
@@ -50,6 +52,7 @@ class CodeBlock:
             self.error = code_data.error
             self.defined_funcs = code_data.defined_funcs
             self.called_funcs = code_data.called_funcs
+            self.stdlibs = code_data.stdlibs
             self.packages = code_data.packages
             self.imports = code_data.imports
 

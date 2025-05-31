@@ -8,15 +8,16 @@ from llm_cgr.analyse.languages.code_data import CodeData
 
 PYTHON_STDLIB = getattr(
     sys, "stdlib_module_names", []
-)  # use this below to determine packages
+)  # use this below to categorise packages
 
 
 class PythonAnalyser(ast.NodeVisitor):
     def __init__(self):
         self.defined_funcs: set[str] = set()
         self.called_funcs: set[str] = set()
-        self.imports: set[str] = set()
+        self.stdlibs: set[str] = set()
         self.packages: set[str] = set()
+        self.imports: set[str] = set()
 
     def visit_FunctionDef(self, node: ast.FunctionDef):
         # save defined functions
@@ -45,9 +46,11 @@ class PythonAnalyser(ast.NodeVisitor):
             # save all imports
             self.imports.add(alias.name)
 
-            # save external packages
+            # save packages
             top_level = alias.name.split(".")[0]
-            if top_level not in PYTHON_STDLIB:
+            if top_level in PYTHON_STDLIB:
+                self.stdlibs.add(top_level)
+            else:
                 self.packages.add(top_level)
 
         self.generic_visit(node)
@@ -56,10 +59,14 @@ class PythonAnalyser(ast.NodeVisitor):
         # save `from module import thing` imports
         module = node.module or ""
 
-        # save external packages
+        # save packages
         # node.level is 0 for absolute imports, 1+ for relative imports
-        if module and module not in PYTHON_STDLIB and node.level == 0:
-            self.packages.add(module.split(".")[0])
+        if module and node.level == 0:
+            package = module.split(".")[0]
+            if package in PYTHON_STDLIB:
+                self.stdlibs.add(package)
+            else:
+                self.packages.add(package)
 
         # save all imports
         for alias in node.names:
@@ -80,7 +87,7 @@ def analyse_python_code(code: str) -> CodeData:
         valid=True,
         defined_funcs=analyser.defined_funcs,
         called_funcs=analyser.called_funcs,
-        # packages lowercase for analysis (names are case-insensitive outside of code)
-        packages=[p.lower() for p in analyser.packages],
+        stdlibs=analyser.stdlibs,
+        packages=analyser.packages,
         imports=analyser.imports,
     )

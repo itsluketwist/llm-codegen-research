@@ -42,8 +42,8 @@ def generate_list(
 
     try:
         _list = eval(_response)
-    except Exception as e:
-        print(f"Error evaluating response.\nresponse: {_response}\nexception: {e}")
+    except Exception as _:
+        print(f"Error evaluating response. Response: {_response}")
         _list = []
 
     if not isinstance(_list, list):
@@ -74,8 +74,8 @@ def generate_bool(
 
     try:
         _bool = eval(_response)
-    except Exception as e:
-        print(f"Error evaluating response.\nresponse: {_response}\nexception: {e}")
+    except Exception as _:
+        print(f"Error evaluating response. Response: {_response}")
         _bool = False
 
     if not isinstance(_bool, bool):

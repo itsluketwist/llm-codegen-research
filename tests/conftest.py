@@ -10,10 +10,7 @@ import pytest
     params=[
         "gpt-4.1-nano-2025-04-14",
         "meta-llama/Llama-3.2-3B-Instruct-Turbo",
-        pytest.param(
-            "claude-3-5-haiku-20241022",
-            marks=pytest.mark.skip(reason="expensive"),
-        ),
+        "claude-3-5-haiku-20241022",
     ],
 )
 def model(request):
@@ -21,6 +18,14 @@ def model(request):
     Fixture to provide different models for testing.
     """
     return request.param
+
+
+@pytest.fixture
+def openai_model():
+    """
+    Fixture to provide a specific GPT model for testing.
+    """
+    return "gpt-4o-mini-2024-07-18"
 
 
 @pytest.fixture

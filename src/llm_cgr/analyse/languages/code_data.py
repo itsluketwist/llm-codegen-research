@@ -14,6 +14,7 @@ class CodeData:
     error: str | None
     defined_funcs: list[str]
     called_funcs: list[str]
+    stdlibs: list[str]
     packages: list[str]
     imports: list[str]
 
@@ -23,6 +24,7 @@ class CodeData:
         error: str | None = None,
         defined_funcs: Iterable | None = None,
         called_funcs: Iterable | None = None,
+        stdlibs: Iterable | None = None,
         packages: Iterable | None = None,
         imports: Iterable | None = None,
     ):
@@ -30,5 +32,12 @@ class CodeData:
         self.error = error
         self.defined_funcs = sorted(defined_funcs) if defined_funcs else []
         self.called_funcs = sorted(called_funcs) if called_funcs else []
-        self.packages = sorted(packages) if packages else []
+        self.stdlibs = self._format_list(stdlibs) if stdlibs else []
+        self.packages = self._format_list(packages) if packages else []
         self.imports = sorted(imports) if imports else []
+
+    def _format_list(self, _list: Iterable[str]) -> list[str]:
+        """
+        Format a list of strings for consistency.
+        """
+        return sorted(set(_l.lower() for _l in _list))

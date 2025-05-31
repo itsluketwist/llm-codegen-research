@@ -99,6 +99,7 @@ def test_markdown():
         "pandas.DataFrame",
         "requests.get",
     ]
+    assert python_code_one.stdlibs == ["collections", "json"]
 
     # unspecified code block defaults to python
     python_code_two = analysed.code_blocks[1]
@@ -109,6 +110,7 @@ def test_markdown():
     assert python_code_two.called_funcs == ["datetime.now", "isoformat", "pd.read_csv"]
     assert python_code_two.packages == ["pandas"]
     assert python_code_two.imports == ["datetime.datetime", "pandas"]
+    assert python_code_two.stdlibs == ["datetime"]
 
     # bash code block with no analysis
     bash_code = analysed.code_blocks[2]
@@ -119,6 +121,7 @@ def test_markdown():
     assert bash_code.called_funcs == []
     assert bash_code.packages == []
     assert bash_code.imports == []
+    assert bash_code.stdlibs == []
 
     # python code block with incorrect syntax
     bad_code = analysed.code_blocks[3]
@@ -129,6 +132,7 @@ def test_markdown():
     assert bad_code.called_funcs == []
     assert bad_code.packages == []
     assert bad_code.imports == []
+    assert bad_code.stdlibs == []
 
     # unknown code block
     unknown_code = analysed.code_blocks[4]
@@ -140,6 +144,7 @@ def test_markdown():
     assert unknown_code.called_funcs == []
     assert unknown_code.packages == []
     assert unknown_code.imports == []
+    assert unknown_code.stdlibs == []
 
     # check the representation methods
     assert unknown_code.markdown == "```\nfor import xxx)[\n```"

@@ -21,8 +21,15 @@ lint:
 test:
 	uv run pytest
 
-coverage:
-	uv run pytest --cov=src/
+testlocal:
+	uv run pytest --ignore=tests/test_llm_api.py
 
-report:
-	uv run pytest --cov=src/ --cov-report term-missing
+testapi:
+	uv run pytest tests/test_llm_api.py
+
+coverage:
+	uv run pytest --cov=src/ --cov-report=term-missing
+
+badge:
+	uv run pytest --cov=src/ --cov-report=xml ; genbadge coverage -i coverage.xml -o coverage.svg ;
+
