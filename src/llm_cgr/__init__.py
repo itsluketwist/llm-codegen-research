@@ -17,6 +17,7 @@ from llm_cgr.llm import (
     generate_list,
     get_llm,
 )
+from llm_cgr.timeout import TimeoutException, timeout
 
 
 __all__ = [
@@ -49,4 +50,7 @@ __all__ = [
     "generate_bool",
     "generate_list",
     "get_llm",
+    # timeout
+    "timeout",
+    "TimeoutException",
 ]
