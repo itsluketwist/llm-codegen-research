@@ -10,6 +10,7 @@ from llm_cgr.llm import (
     Anthropic_LLM,
     Base_LLM,
     GenerationProtocol,
+    Mistral_LLM,
     OpenAI_LLM,
     TogetherAI_LLM,
     generate,
@@ -44,6 +45,7 @@ __all__ = [
     "Anthropic_LLM",
     "Base_LLM",
     "GenerationProtocol",
+    "Mistral_LLM",
     "OpenAI_LLM",
     "TogetherAI_LLM",
     "generate",
@@ -51,6 +53,6 @@ __all__ = [
     "generate_list",
     "get_llm",
     # timeout
-    "timeout",
     "TimeoutException",
+    "timeout",
 ]

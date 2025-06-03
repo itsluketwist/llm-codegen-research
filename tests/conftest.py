@@ -11,6 +11,7 @@ import pytest
         "gpt-4.1-nano-2025-04-14",
         "meta-llama/Llama-3.2-3B-Instruct-Turbo",
         "claude-3-5-haiku-20241022",
+        "mistral-small-2503",
     ],
 )
 def model(request):

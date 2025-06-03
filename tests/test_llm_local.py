@@ -6,6 +6,7 @@ import pytest
 
 from llm_cgr import (
     Anthropic_LLM,
+    Mistral_LLM,
     OpenAI_LLM,
     TogetherAI_LLM,
     generate_bool,
@@ -18,18 +19,20 @@ def test_no_model():
     Test the get_llm function without a model.
     """
     llm = OpenAI_LLM()
-    with pytest.raises(ValueError, match="Model must be specified for OpenAI API."):
-        llm.generate(user="What is the capital of Denmark?")
-
-    llm = TogetherAI_LLM()
-    with pytest.raises(ValueError, match="Model must be specified for TogetherAI API."):
+    with pytest.raises(ValueError, match="Model must be specified for LLM APIs."):
         llm.generate(user="What is the capital of Canada?")
 
+    llm = TogetherAI_LLM()
+    with pytest.raises(ValueError, match="Model must be specified for LLM APIs."):
+        llm.generate(user="What is the capital of Brazil?")
+
     llm = Anthropic_LLM()
-    with pytest.raises(
-        ValueError, match="Model must be specified for Anthropic Claude API."
-    ):
-        llm.generate(user="What is the capital of Portugal?")
+    with pytest.raises(ValueError, match="Model must be specified for LLM APIs."):
+        llm.chat(user="What is the capital of Ireland?")
+
+    llm = Mistral_LLM()
+    with pytest.raises(ValueError, match="Model must be specified for LLM APIs."):
+        llm.chat(user="What is the capital of Hawaii?")
 
 
 def test_build_input():
@@ -37,15 +40,6 @@ def test_build_input():
     Test the _build_input method.
     """
     llm = OpenAI_LLM()
-    input_data = llm._build_input(user="What is the capital of Denmark?")
-    assert isinstance(input_data, list)
-    assert len(input_data) == 1
-    assert input_data[0] == {
-        "role": "user",
-        "content": "What is the capital of Denmark?",
-    }
-
-    llm = TogetherAI_LLM()
     input_data = llm._build_input(user="What is the capital of Canada?")
     assert isinstance(input_data, list)
     assert len(input_data) == 1
@@ -54,8 +48,17 @@ def test_build_input():
         "content": "What is the capital of Canada?",
     }
 
+    llm = TogetherAI_LLM()
+    input_data = llm._build_input(user="What is the capital of Brazil?")
+    assert isinstance(input_data, list)
+    assert len(input_data) == 1
+    assert input_data[0] == {
+        "role": "user",
+        "content": "What is the capital of Brazil?",
+    }
+
     llm = Anthropic_LLM()
-    input_data = llm._build_input(user="What is the capital of Portugal?")
+    input_data = llm._build_input(user="What is the capital of Ireland?")
     assert isinstance(input_data, list)
     assert len(input_data) == 1
     assert input_data[0] == {
@@ -63,9 +66,18 @@ def test_build_input():
         "content": [
             {
                 "type": "text",
-                "text": "What is the capital of Portugal?",
+                "text": "What is the capital of Ireland?",
             }
         ],
+    }
+
+    llm = Mistral_LLM()
+    input_data = llm._build_input(user="What is the capital of Hawaii?")
+    assert isinstance(input_data, list)
+    assert len(input_data) == 1
+    assert input_data[0] == {
+        "role": "user",
+        "content": "What is the capital of Hawaii?",
     }
 
 

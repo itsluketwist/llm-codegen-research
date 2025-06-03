@@ -1,7 +1,7 @@
 """API utilities for interfacing with the generation models."""
 
 from llm_cgr.defaults import DEFAULT_MODEL
-from llm_cgr.llm.llm_clients import get_llm
+from llm_cgr.llm.clients import get_llm
 from llm_cgr.llm.prompts import BOOL_SYSTEM_PROMPT, LIST_SYSTEM_PROMPT
 
 

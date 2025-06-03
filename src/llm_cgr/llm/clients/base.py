@@ -31,13 +31,17 @@ class Base_LLM(ABC):
         """
         Generate model responses from the LLMs API.
         """
+        _model = model or self._model
+        if _model is None:
+            raise ValueError("Model must be specified for LLM APIs.")
+
         messages = self._build_input(user=user, system=system)
 
         _generations = []
         for _ in range(samples):
             response = self._get_response(
                 input=messages,
-                model=model,
+                model=_model,
                 temperature=temperature,
                 max_tokens=max_tokens,
             )
@@ -56,6 +60,10 @@ class Base_LLM(ABC):
         """
         Generate a model response from the LLMs API, in the ongoing chat.
         """
+        _model = model or self._model
+        if _model is None:
+            raise ValueError("Model must be specified for LLM APIs.")
+
         if self._history is None:
             # initialise the history
             self._history = self._build_input(
@@ -74,7 +82,7 @@ class Base_LLM(ABC):
         response = self._get_response(
             input=self._history,
             system=system,
-            model=model,
+            model=_model,
             temperature=temperature,
             max_tokens=max_tokens,
         )
@@ -118,9 +126,9 @@ class Base_LLM(ABC):
     @abstractmethod
     def _get_response(
         self,
+        model: str,
         input: list[dict[str, Any]],
         system: str | None = None,
-        model: str | None = None,
         temperature: float | None = None,
         max_tokens: int | None = None,
     ) -> str:
