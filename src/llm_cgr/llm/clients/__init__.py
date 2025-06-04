@@ -18,10 +18,10 @@ def get_llm(
     if "claude" in model:
         return Anthropic_LLM(model=model, system=system)
 
-    if "gpt" in model or "o1" in model:
+    if "gpt" in model or model.startswith("o"):
         return OpenAI_LLM(model=model, system=system)
 
-    if "mistral" in model:
+    if "tral" in model:
         return Mistral_LLM(model=model, system=system)
 
     return TogetherAI_LLM(model=model, system=system)
