@@ -15,13 +15,22 @@ class Anthropic_LLM(Base_LLM):
         self,
         model: str | None = None,
         system: str | None = None,
+        temperature: float | None = None,
+        top_p: float | None = None,
+        max_tokens: int | None = None,
     ) -> None:
         """
         Initialise the Anthropic client.
 
         Requires the ANTHROPIC_API_KEY environment variable to be set.
         """
-        super().__init__(model=model, system=system)
+        super().__init__(
+            model=model,
+            system=system,
+            temperature=temperature,
+            top_p=top_p,
+            max_tokens=max_tokens,
+        )
         self._client = anthropic.Anthropic()
 
     def _build_message(
@@ -54,6 +63,7 @@ class Anthropic_LLM(Base_LLM):
         input: list[dict[str, Any]],
         system: str | None = None,
         temperature: float | None = None,
+        top_p: float | None = None,
         max_tokens: int | None = None,
     ) -> str:
         """Generate a model response from the Anthropic API."""
@@ -62,6 +72,7 @@ class Anthropic_LLM(Base_LLM):
             system=system or self._system or anthropic.NOT_GIVEN,
             messages=input,
             temperature=temperature or anthropic.NOT_GIVEN,
+            top_p=top_p or anthropic.NOT_GIVEN,
             max_tokens=max_tokens or DEFAULT_MAX_TOKENS,
         )
         return response.content[0].text

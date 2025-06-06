@@ -15,6 +15,7 @@ class GenerationProtocol(Protocol):
         model: str | None = None,
         samples: int = 1,
         temperature: float | None = None,
+        top_p: float | None = None,
         max_tokens: int | None = None,
     ) -> list[str]:
         """
@@ -27,6 +28,7 @@ class GenerationProtocol(Protocol):
         system: str | None = None,
         model: str | None = None,
         temperature: float | None = None,
+        top_p: float | None = None,
         max_tokens: int | None = None,
     ) -> str:
         """

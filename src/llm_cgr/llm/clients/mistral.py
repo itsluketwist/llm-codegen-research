@@ -15,14 +15,25 @@ class Mistral_LLM(Base_LLM):
         self,
         model: str | None = None,
         system: str | None = None,
+        temperature: float | None = None,
+        top_p: float | None = None,
+        max_tokens: int | None = None,
     ) -> None:
         """
         Initialise the Mistral client.
 
         Requires the MISTRAL_API_KEY environment variable to be set.
         """
-        super().__init__(model=model, system=system)
-        self._client = mistralai.Mistral(api_key=os.environ["MISTRAL_API_KEY"])
+        super().__init__(
+            model=model,
+            system=system,
+            temperature=temperature,
+            top_p=top_p,
+            max_tokens=max_tokens,
+        )
+        self._client = mistralai.Mistral(
+            api_key=os.environ["MISTRAL_API_KEY"],
+        )
 
     def _build_message(
         self,
@@ -53,6 +64,7 @@ class Mistral_LLM(Base_LLM):
         input: list[dict[str, Any]],
         system: str | None = None,
         temperature: float | None = None,
+        top_p: float | None = None,
         max_tokens: int | None = None,
     ) -> str:
         """Generate a model response from the MistralAI API."""
@@ -60,6 +72,7 @@ class Mistral_LLM(Base_LLM):
             model=model,
             messages=input,
             temperature=temperature or mistralai.UNSET,
+            top_p=top_p,
             max_tokens=max_tokens or mistralai.UNSET,
         )
         return response.choices[0].message.content

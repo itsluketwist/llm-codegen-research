@@ -11,12 +11,21 @@ class Base_LLM(ABC):
         self,
         model: str | None = None,
         system: str | None = None,
+        temperature: float | None = None,
+        top_p: float | None = None,
+        max_tokens: int | None = None,
     ) -> None:
         """
         Initialise the LLM client.
         """
         self._model = model
         self._system = system
+
+        # default parameters
+        self._temperature = temperature
+        self._top_p = top_p
+        self._max_tokens = max_tokens
+
         self._history: list[dict[str, Any]] | None = None
 
     def generate(
@@ -26,6 +35,7 @@ class Base_LLM(ABC):
         model: str | None = None,
         samples: int = 1,
         temperature: float | None = None,
+        top_p: float | None = None,
         max_tokens: int | None = None,
     ) -> list[str]:
         """
@@ -42,8 +52,9 @@ class Base_LLM(ABC):
             response = self._get_response(
                 input=messages,
                 model=_model,
-                temperature=temperature,
-                max_tokens=max_tokens,
+                temperature=temperature or self._temperature,
+                top_p=top_p or self._top_p,
+                max_tokens=max_tokens or self._max_tokens,
             )
             _generations.append(response)
 
@@ -55,6 +66,7 @@ class Base_LLM(ABC):
         system: str | None = None,
         model: str | None = None,
         temperature: float | None = None,
+        top_p: float | None = None,
         max_tokens: int | None = None,
     ) -> str:
         """
@@ -83,8 +95,9 @@ class Base_LLM(ABC):
             input=self._history,
             system=system,
             model=_model,
-            temperature=temperature,
-            max_tokens=max_tokens,
+            temperature=temperature or self._temperature,
+            top_p=top_p or self._top_p,
+            max_tokens=max_tokens or self._max_tokens,
         )
 
         # update the history and return
@@ -130,6 +143,7 @@ class Base_LLM(ABC):
         input: list[dict[str, Any]],
         system: str | None = None,
         temperature: float | None = None,
+        top_p: float | None = None,
         max_tokens: int | None = None,
     ) -> str:
         """

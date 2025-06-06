@@ -11,20 +11,30 @@ from llm_cgr.llm.clients.together import TogetherAI_LLM
 def get_llm(
     model: str,
     system: str | None = None,
+    temperature: float | None = None,
+    top_p: float | None = None,
+    max_tokens: int | None = None,
 ) -> GenerationProtocol:
     """
     Initialise the correct LLM client for the given model.
     """
+    llm_class: type[Base_LLM]
     if "claude" in model:
-        return Anthropic_LLM(model=model, system=system)
+        llm_class = Anthropic_LLM
+    elif "gpt" in model or model.startswith("o"):
+        llm_class = OpenAI_LLM
+    elif "tral" in model:
+        llm_class = Mistral_LLM
+    else:
+        llm_class = TogetherAI_LLM
 
-    if "gpt" in model or model.startswith("o"):
-        return OpenAI_LLM(model=model, system=system)
-
-    if "tral" in model:
-        return Mistral_LLM(model=model, system=system)
-
-    return TogetherAI_LLM(model=model, system=system)
+    return llm_class(
+        model=model,
+        system=system,
+        temperature=temperature,
+        top_p=top_p,
+        max_tokens=max_tokens,
+    )
 
 
 __all__ = [

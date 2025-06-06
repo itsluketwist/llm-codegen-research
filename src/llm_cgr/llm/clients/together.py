@@ -14,13 +14,22 @@ class TogetherAI_LLM(Base_LLM):
         self,
         model: str | None = None,
         system: str | None = None,
+        temperature: float | None = None,
+        top_p: float | None = None,
+        max_tokens: int | None = None,
     ) -> None:
         """
         Initialise the TogetherAI client.
 
         Requires the TOGETHER_API_KEY environment variable to be set.
         """
-        super().__init__(model=model, system=system)
+        super().__init__(
+            model=model,
+            system=system,
+            temperature=temperature,
+            top_p=top_p,
+            max_tokens=max_tokens,
+        )
         self._client = together.Together()
 
     def _build_message(
@@ -49,6 +58,7 @@ class TogetherAI_LLM(Base_LLM):
         input: list[dict[str, Any]],
         system: str | None = None,
         temperature: float | None = None,
+        top_p: float | None = None,
         max_tokens: int | None = None,
     ) -> str:
         """Generate a model response from the TogetherAI API."""
@@ -56,6 +66,7 @@ class TogetherAI_LLM(Base_LLM):
             model=model,
             messages=input,
             temperature=temperature,
+            top_p=top_p,
             max_tokens=max_tokens,
         )
         return response.choices[0].message.content
