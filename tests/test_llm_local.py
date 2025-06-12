@@ -14,6 +14,9 @@ from llm_cgr import (
 )
 
 
+TEST_SYSTEM_PROMPT = "You are a helpful assistant."
+
+
 def test_no_model():
     """
     Test the get_llm function without a model.
@@ -39,46 +42,70 @@ def test_build_input():
     """
     Test the _build_input method.
     """
-    llm = OpenAI_LLM()
-    input_data = llm._build_input(user="What is the capital of Canada?")
-    assert isinstance(input_data, list)
-    assert len(input_data) == 1
-    assert input_data[0] == {
-        "role": "user",
-        "content": "What is the capital of Canada?",
-    }
+    llm = OpenAI_LLM(system=TEST_SYSTEM_PROMPT)
+    input_data = llm._build_input(
+        user="What is the capital of Canada?",
+        system=TEST_SYSTEM_PROMPT,
+    )
+    assert input_data == [
+        {
+            "role": "system",
+            "content": TEST_SYSTEM_PROMPT,
+        },
+        {
+            "role": "user",
+            "content": "What is the capital of Canada?",
+        },
+    ]
 
-    llm = TogetherAI_LLM()
-    input_data = llm._build_input(user="What is the capital of Brazil?")
-    assert isinstance(input_data, list)
-    assert len(input_data) == 1
-    assert input_data[0] == {
-        "role": "user",
-        "content": "What is the capital of Brazil?",
-    }
+    llm = TogetherAI_LLM(system=TEST_SYSTEM_PROMPT)
+    input_data = llm._build_input(
+        user="What is the capital of Brazil?",
+        system=TEST_SYSTEM_PROMPT,
+    )
+    assert input_data == [
+        {
+            "role": "system",
+            "content": TEST_SYSTEM_PROMPT,
+        },
+        {
+            "role": "user",
+            "content": "What is the capital of Brazil?",
+        },
+    ]
 
-    llm = Anthropic_LLM()
-    input_data = llm._build_input(user="What is the capital of Ireland?")
-    assert isinstance(input_data, list)
-    assert len(input_data) == 1
-    assert input_data[0] == {
-        "role": "user",
-        "content": [
-            {
-                "type": "text",
-                "text": "What is the capital of Ireland?",
-            }
-        ],
-    }
+    llm = Anthropic_LLM(system=TEST_SYSTEM_PROMPT)
+    input_data = llm._build_input(
+        user="What is the capital of Ireland?",
+        system=TEST_SYSTEM_PROMPT,
+    )
+    assert input_data == [
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "What is the capital of Ireland?",
+                }
+            ],
+        },
+    ]
 
-    llm = Mistral_LLM()
-    input_data = llm._build_input(user="What is the capital of Hawaii?")
-    assert isinstance(input_data, list)
-    assert len(input_data) == 1
-    assert input_data[0] == {
-        "role": "user",
-        "content": "What is the capital of Hawaii?",
-    }
+    llm = Mistral_LLM(system=TEST_SYSTEM_PROMPT)
+    input_data = llm._build_input(
+        user="What is the capital of Hawaii?",
+        system=TEST_SYSTEM_PROMPT,
+    )
+    assert input_data == [
+        {
+            "role": "system",
+            "content": TEST_SYSTEM_PROMPT,
+        },
+        {
+            "role": "user",
+            "content": "What is the capital of Hawaii?",
+        },
+    ]
 
 
 @pytest.mark.parametrize(

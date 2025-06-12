@@ -45,7 +45,10 @@ class Base_LLM(ABC):
         if _model is None:
             raise ValueError("Model must be specified for LLM APIs.")
 
-        messages = self._build_input(user=user, system=system)
+        messages = self._build_input(
+            user=user,
+            system=system or self._system,
+        )
 
         _generations = []
         for _ in range(samples):
