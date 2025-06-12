@@ -8,6 +8,7 @@ def experiment(function):
 
     def wrapper(*args, **kwargs):
         print(
+            "\n"
             "===== STARTING EXPERIMENT "
             f"== {function.__name__} "
             f"== {datetime.now().isoformat()} ====="
@@ -17,6 +18,7 @@ def experiment(function):
             "===== FINISHED EXPERIMENT "
             f"== {function.__name__} "
             f"== {datetime.now().isoformat()} ====="
+            "\n"
         )
         return result
 

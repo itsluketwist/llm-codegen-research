@@ -10,6 +10,8 @@ def generate(
     model: str = DEFAULT_MODEL,
     system: str | None = None,
     temperature: float | None = None,
+    top_p: float | None = None,
+    max_tokens: int | None = None,
     **generate_kwargs,
 ) -> str:
     """
@@ -18,8 +20,10 @@ def generate(
     client = get_llm(model=model, system=system)
     [result] = client.generate(
         user=user,
-        system=system,
+        samples=1,  # only a single response for a simple generate
         temperature=temperature,
+        top_p=top_p,
+        max_tokens=max_tokens,
         **generate_kwargs,
     )
     return result
@@ -29,6 +33,7 @@ def generate_list(
     user: str,
     system: str = LIST_SYSTEM_PROMPT,
     model: str = DEFAULT_MODEL,
+    **generate_kwargs,
 ) -> list[str]:
     """
     Simple function to quickly prompt a model for a list of words.
@@ -37,6 +42,7 @@ def generate_list(
         user=user,
         system=system,
         model=model,
+        **generate_kwargs,
     )
     _response = _trim_code_block(text=_response)
 
@@ -61,6 +67,7 @@ def generate_bool(
     user: str,
     system: str = BOOL_SYSTEM_PROMPT,
     model: str = DEFAULT_MODEL,
+    **generate_kwargs,
 ) -> bool:
     """
     Simple function to quickly prompt a model for a boolean value.
@@ -69,6 +76,7 @@ def generate_bool(
         user=user,
         system=system,
         model=model,
+        **generate_kwargs,
     )
     _response = _trim_code_block(text=_response)
 

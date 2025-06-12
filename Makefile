@@ -1,15 +1,18 @@
 # simple make file for common commands
 
-new: newvenv newlint
+new: new-venv new-lint
 
 check: lint test
 
-newvenv:
+new-venv:
 	python -m venv .venv
 	. venv/bin/activate
 
-newlint:
+new-lint:
 	pre-commit install
+	pre-commit autoupdate
+
+update-lint:
 	pre-commit autoupdate
 
 compile:
@@ -21,15 +24,15 @@ lint:
 test:
 	uv run pytest
 
-testlocal:
+test-local:
 	uv run pytest --ignore=tests/test_llm_api.py
 
-testapi:
+test-api:
 	uv run pytest tests/test_llm_api.py
 
-coverage:
+test-coverage:
 	uv run pytest --cov=src/ --cov-report=term-missing
 
-badge:
+test-badge:
 	uv run pytest --cov=src/ --cov-report=xml ; genbadge coverage -i coverage.xml -o coverage.svg ;
 
