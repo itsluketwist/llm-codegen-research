@@ -17,11 +17,9 @@ class CodeBlock:
     text: str
     valid: bool | None  # None if validity unknown, language not supported
     error: str | None  # only set if not valid
-    defined_funcs: list[str]
-    called_funcs: list[str]
-    stdlibs: list[str]
-    packages: list[str]
-    imports: list[str]
+    std_libs: list[str]
+    ext_libs: list[str]
+    lib_calls: dict[str, list[dict]]
 
     def __init__(
         self,
@@ -33,28 +31,25 @@ class CodeBlock:
         self.text = text.strip()
 
         code_data = analyse_code(
-            code=self.text, language=self.language or default_language
+            code=self.text,
+            language=self.language or default_language,
         )
 
         if self.language is None and not code_data.valid:
             # if we hit errors after defaulting the language, ignore the results!
             self.valid = None
             self.error = None
-            self.defined_funcs = []
-            self.called_funcs = []
-            self.stdlibs = []
-            self.packages = []
-            self.imports = []
+            self.std_libs = []
+            self.ext_libs = []
+            self.lib_calls = {}
 
         else:
             self.language = self.language or default_language
             self.valid = code_data.valid
             self.error = code_data.error
-            self.defined_funcs = code_data.defined_funcs
-            self.called_funcs = code_data.called_funcs
-            self.stdlibs = code_data.stdlibs
-            self.packages = code_data.packages
-            self.imports = code_data.imports
+            self.std_libs = code_data.std_libs
+            self.ext_libs = code_data.ext_libs
+            self.lib_calls = code_data.lib_calls
 
     def __repr__(self):
         _language = f"language={self.language or 'unspecified'}"

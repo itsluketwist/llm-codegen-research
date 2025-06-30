@@ -3,9 +3,7 @@ from typing import Any
 
 
 class Base_LLM(ABC):
-    """
-    Class to access the OpenAI API.
-    """
+    """Base class to access LLMs via their APIs."""
 
     def __init__(
         self,

@@ -1,6 +1,7 @@
 from llm_cgr.llm.clients import (
     Anthropic_LLM,
     Base_LLM,
+    DeepSeek_LLM,
     GenerationProtocol,
     Mistral_LLM,
     OpenAI_LLM,
@@ -19,6 +20,7 @@ from llm_cgr.llm.prompts import (
 __all__ = [
     "Anthropic_LLM",
     "Base_LLM",
+    "DeepSeek_LLM",
     "GenerationProtocol",
     "Mistral_LLM",
     "OpenAI_LLM",

@@ -2,6 +2,7 @@
 
 from llm_cgr.llm.clients.anthropic import Anthropic_LLM
 from llm_cgr.llm.clients.base import Base_LLM
+from llm_cgr.llm.clients.deepseek import DeepSeek_LLM
 from llm_cgr.llm.clients.mistral import Mistral_LLM
 from llm_cgr.llm.clients.openai import OpenAI_LLM
 from llm_cgr.llm.clients.protocol import GenerationProtocol
@@ -25,6 +26,8 @@ def get_llm(
         llm_class = OpenAI_LLM
     elif "tral" in model:
         llm_class = Mistral_LLM
+    elif "deepseek" in model:
+        llm_class = DeepSeek_LLM
     else:
         llm_class = TogetherAI_LLM
 
@@ -40,6 +43,7 @@ def get_llm(
 __all__ = [
     "Anthropic_LLM",
     "Base_LLM",
+    "DeepSeek_LLM",
     "GenerationProtocol",
     "OpenAI_LLM",
     "TogetherAI_LLM",

@@ -12,29 +12,23 @@ class CodeData:
 
     valid: bool | None
     error: str | None
-    defined_funcs: list[str]
-    called_funcs: list[str]
-    stdlibs: list[str]
-    packages: list[str]
-    imports: list[str]
+    std_libs: list[str]
+    ext_libs: list[str]
+    lib_calls: dict[str, list[dict]]
 
     def __init__(
         self,
         valid: bool | None = None,
         error: str | None = None,
-        defined_funcs: Iterable | None = None,
-        called_funcs: Iterable | None = None,
-        stdlibs: Iterable | None = None,
-        packages: Iterable | None = None,
-        imports: Iterable | None = None,
+        std_libs: Iterable | None = None,
+        ext_libs: Iterable | None = None,
+        lib_calls: dict[str, list[dict]] | None = None,
     ):
         self.valid = valid
         self.error = error
-        self.defined_funcs = sorted(defined_funcs) if defined_funcs else []
-        self.called_funcs = sorted(called_funcs) if called_funcs else []
-        self.stdlibs = self._format_list(stdlibs) if stdlibs else []
-        self.packages = self._format_list(packages) if packages else []
-        self.imports = sorted(imports) if imports else []
+        self.std_libs = self._format_list(std_libs) if std_libs else []
+        self.ext_libs = self._format_list(ext_libs) if ext_libs else []
+        self.lib_calls = lib_calls if lib_calls is not None else {}
 
     def _format_list(self, _list: Iterable[str]) -> list[str]:
         """

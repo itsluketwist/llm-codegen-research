@@ -17,13 +17,19 @@
         <img alt="Python 3" src="https://img.shields.io/badge/Python_3-blue?style=for-the-badge&logo=python&logoColor=white" />
     </a>
     <a href="https://openai.com/blog/openai-api/">
-        <img alt="OpenAI API" src="https://img.shields.io/badge/OpenAI_API-412991?style=for-the-badge&logo=openai&logoColor=white" />
+        <img alt="OpenAI API" src="https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=openai&logoColor=white" />
     </a>
     <a href="https://www.anthropic.com/api/">
-        <img alt="Anthropic API" src="https://img.shields.io/badge/Claude_API-D97757?style=for-the-badge&logo=claude&logoColor=white" />
+        <img alt="Anthropic API" src="https://img.shields.io/badge/Claude-D97757?style=for-the-badge&logo=claude&logoColor=white" />
     </a>
     <a href="https://api.together.ai/">
-        <img alt="together.ai API" src="https://img.shields.io/badge/together.ai_API-B5B5B5?style=for-the-badge&logoColor=white" />
+        <img alt="together.ai API" src="https://img.shields.io/badge/together.ai-B5B5B5?style=for-the-badge&logoColor=white" />
+    </a>
+    <a href="https://docs.mistral.ai/api/">
+        <img alt="Mistral API" src="https://img.shields.io/badge/Mistral-FA520F?style=for-the-badge&logo=mistral&logoColor=white" />
+    </a>
+    <a href="https://api-docs.deepseek.com/">
+        <img alt="DeepSeek API" src="https://img.shields.io/badge/DeepSeek-003366?style=for-the-badge&logoColor=white" />
     </a>
 </div>
 
@@ -48,6 +54,8 @@ First configure environment vairables for the APIs you want to use:
 export OPENAI_API_KEY=...
 export ANTHROPIC_API_KEY=...
 export TOGETHER_API_KEY=...
+export MISTRAL_API_KEY=...
+export DEEPSEEK_API_KEY=...
 ```
 
 You can get a quick response from an LLM:

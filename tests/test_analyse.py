@@ -17,7 +17,10 @@ import pandas.DataFrame
 def process_data(data):
     response = get("https://api.example.com/data")
     data = np.array([1, 2, 3, 4, 5])
+    another = np.sub_module.normalize(data=[1, 2, 3], response="response")
     return np.process(data, response)
+
+process_data("data")
 ```
 
 Some more code:
@@ -50,8 +53,6 @@ for import xxx)[
 ```
 """
 
-# 57-59, 62, 66, 102-105, 108, 135-139
-
 
 def test_markdown():
     """
@@ -65,7 +66,7 @@ def test_markdown():
     assert f"{analysed}" == TEST_LLM_RESPONSE
     assert len(analysed.code_blocks) == 5
     assert [cb.__repr__() for cb in analysed.code_blocks] == [
-        "CodeBlock(language=python, lines=11)",
+        "CodeBlock(language=python, lines=14)",
         "CodeBlock(language=python, lines=4)",
         "CodeBlock(language=bash, lines=1)",
         "CodeBlock(language=python, lines=3)",
@@ -75,64 +76,93 @@ def test_markdown():
     assert analysed.languages == ["bash", "python"]
     assert (
         analysed.__repr__()
-        == "Markdown(lines=45, code_blocks=5, languages=bash,python)"
+        == "Markdown(lines=48, code_blocks=5, languages=bash,python)"
     )
 
     # expected python code block
     python_code_one = analysed.code_blocks[0]
+    print(python_code_one.error)
     assert python_code_one.language == "python"
     assert python_code_one.valid is True
     assert python_code_one.error is None
-    assert python_code_one.defined_funcs == ["process_data"]
-    assert python_code_one.called_funcs == ["get", "np.array", "np.process"]
-    assert python_code_one.packages == [
+    assert python_code_one.ext_libs == [
         "cryptography",
         "numpy",
         "pandas",
         "requests",
     ]
-    assert python_code_one.imports == [
-        "collections.defaultdict",
-        "cryptography.fernet.Fernet",
+    assert python_code_one.std_libs == [
+        "collections",
         "json",
-        "numpy",
-        "pandas.DataFrame",
-        "requests.get",
     ]
-    assert python_code_one.stdlibs == ["collections", "json"]
+    assert python_code_one.lib_calls == {
+        "requests": [
+            {
+                "function": "get",
+                "args": ["'https://api.example.com/data'"],
+                "kwargs": {},
+            }
+        ],
+        "numpy": [
+            {
+                "function": "array",
+                "args": ["[1, 2, 3, 4, 5]"],
+                "kwargs": {},
+            },
+            {
+                "function": "sub_module.normalize",
+                "args": [],
+                "kwargs": {"data": "[1, 2, 3]", "response": "'response'"},
+            },
+            {
+                "function": "process",
+                "args": ["data", "response"],
+                "kwargs": {},
+            },
+        ],
+    }
 
     # unspecified code block defaults to python
     python_code_two = analysed.code_blocks[1]
     assert python_code_two.language == "python"
     assert python_code_two.valid is True
     assert python_code_two.error is None
-    assert python_code_two.defined_funcs == []
-    assert python_code_two.called_funcs == ["datetime.now", "isoformat", "pd.read_csv"]
-    assert python_code_two.packages == ["pandas"]
-    assert python_code_two.imports == ["datetime.datetime", "pandas"]
-    assert python_code_two.stdlibs == ["datetime"]
+    assert python_code_two.ext_libs == ["pandas"]
+    assert python_code_two.std_libs == ["datetime"]
+    assert python_code_two.lib_calls == {
+        "pandas": [
+            {
+                "function": "read_csv",
+                "args": ["f'data_{datetime.now().isoformat()}.csv'"],
+                "kwargs": {},
+            }
+        ],
+        "datetime": [
+            {
+                "function": "datetime.now",
+                "args": [],
+                "kwargs": {},
+            }
+        ],
+    }
 
     # bash code block with no analysis
     bash_code = analysed.code_blocks[2]
     assert bash_code.language == "bash"
     assert bash_code.valid is None
     assert bash_code.error is None
-    assert bash_code.defined_funcs == []
-    assert bash_code.called_funcs == []
-    assert bash_code.packages == []
-    assert bash_code.imports == []
-    assert bash_code.stdlibs == []
+    assert bash_code.ext_libs == []
+    assert bash_code.std_libs == []
+    assert bash_code.lib_calls == {}
 
     # python code block with incorrect syntax
     bad_code = analysed.code_blocks[3]
     assert bad_code.language == "python"
     assert bad_code.valid is False
     assert bad_code.error == "'(' was never closed (<unknown>, line 3)"
-    assert bad_code.defined_funcs == []
-    assert bad_code.called_funcs == []
-    assert bad_code.packages == []
-    assert bad_code.imports == []
-    assert bad_code.stdlibs == []
+    assert bad_code.ext_libs == []
+    assert bad_code.std_libs == []
+    assert bad_code.lib_calls == {}
 
     # unknown code block
     unknown_code = analysed.code_blocks[4]
@@ -140,11 +170,9 @@ def test_markdown():
     assert unknown_code.language is None
     assert unknown_code.valid is None
     assert unknown_code.error is None
-    assert unknown_code.defined_funcs == []
-    assert unknown_code.called_funcs == []
-    assert unknown_code.packages == []
-    assert unknown_code.imports == []
-    assert unknown_code.stdlibs == []
+    assert unknown_code.ext_libs == []
+    assert unknown_code.std_libs == []
+    assert unknown_code.lib_calls == {}
 
     # check the representation methods
     assert unknown_code.markdown == "```\nfor import xxx)[\n```"

@@ -12,6 +12,7 @@ import pytest
         "meta-llama/Llama-3.2-3B-Instruct-Turbo",
         "claude-3-5-haiku-20241022",
         "mistral-small-2503",
+        "deepseek-chat",
     ],
 )
 def model(request):

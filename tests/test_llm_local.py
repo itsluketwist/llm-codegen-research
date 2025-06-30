@@ -6,6 +6,7 @@ import pytest
 
 from llm_cgr import (
     Anthropic_LLM,
+    DeepSeek_LLM,
     Mistral_LLM,
     OpenAI_LLM,
     TogetherAI_LLM,
@@ -36,6 +37,10 @@ def test_no_model():
     llm = Mistral_LLM()
     with pytest.raises(ValueError, match="Model must be specified for LLM APIs."):
         llm.chat(user="What is the capital of Hawaii?")
+
+    llm = DeepSeek_LLM()
+    with pytest.raises(ValueError, match="Model must be specified for LLM APIs."):
+        llm.chat(user="What is the capital of Norway?")
 
 
 def test_build_input():
@@ -104,6 +109,22 @@ def test_build_input():
         {
             "role": "user",
             "content": "What is the capital of Hawaii?",
+        },
+    ]
+
+    llm = DeepSeek_LLM(system=TEST_SYSTEM_PROMPT)
+    input_data = llm._build_input(
+        user="What is the capital of Norway?",
+        system=TEST_SYSTEM_PROMPT,
+    )
+    assert input_data == [
+        {
+            "role": "system",
+            "content": TEST_SYSTEM_PROMPT,
+        },
+        {
+            "role": "user",
+            "content": "What is the capital of Norway?",
         },
     ]
 

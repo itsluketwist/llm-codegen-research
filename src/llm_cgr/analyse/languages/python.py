@@ -2,6 +2,8 @@
 
 import ast
 import sys
+from collections import defaultdict
+from typing import Any
 
 from llm_cgr.analyse.languages.code_data import CodeData
 
@@ -13,45 +15,25 @@ PYTHON_STDLIB = getattr(
 
 class PythonAnalyser(ast.NodeVisitor):
     def __init__(self):
-        self.defined_funcs: set[str] = set()
-        self.called_funcs: set[str] = set()
-        self.stdlibs: set[str] = set()
-        self.packages: set[str] = set()
-        self.imports: set[str] = set()
-
-    def visit_FunctionDef(self, node: ast.FunctionDef):
-        # save defined functions
-        self.defined_funcs.add(node.name)
-        self.generic_visit(node)
-
-    def visit_Call(self, node: ast.Call):
-        func = node.func
-
-        # save `foo()` function calls
-        if isinstance(func, ast.Name):
-            self.called_funcs.add(func.id)
-
-        # save `lib.method()` function calls
-        elif isinstance(func, ast.Attribute):
-            if isinstance(func.value, ast.Name):
-                self.called_funcs.add(f"{func.value.id}.{func.attr}")
-            else:
-                self.called_funcs.add(func.attr)
-
-        self.generic_visit(node)
+        self.std_libs: set[str] = set()
+        self.ext_libs: set[str] = set()
+        self.imports: dict[str, str] = {}
+        self.lib_calls: defaultdict[str, list[dict]] = defaultdict(list)
 
     def visit_Import(self, node: ast.Import):
         # save `import module` imports
         for alias in node.names:
             # save all imports
-            self.imports.add(alias.name)
+            name = alias.name
+            asname = alias.asname or alias.name
+            self.imports[asname] = name
 
             # save packages
-            top_level = alias.name.split(".")[0]
+            top_level = name.split(".")[0]
             if top_level in PYTHON_STDLIB:
-                self.stdlibs.add(top_level)
+                self.std_libs.add(top_level)
             else:
-                self.packages.add(top_level)
+                self.ext_libs.add(top_level)
 
         self.generic_visit(node)
 
@@ -64,14 +46,52 @@ class PythonAnalyser(ast.NodeVisitor):
         if module and node.level == 0:
             package = module.split(".")[0]
             if package in PYTHON_STDLIB:
-                self.stdlibs.add(package)
+                self.std_libs.add(package)
             else:
-                self.packages.add(package)
+                self.ext_libs.add(package)
 
         # save all imports
         for alias in node.names:
-            full = f"{module}.{alias.name}" if module else alias.name
-            self.imports.add(full)
+            full_name = f"{module}.{alias.name}" if module else alias.name
+            asname = alias.asname or alias.name
+            self.imports[asname] = full_name
+
+        self.generic_visit(node)
+
+    def visit_Call(self, node: ast.Call):
+        # Handle attribute calls: e.g., np.func() or np.sub.func()
+        func = node.func
+        if isinstance(func, ast.Attribute):
+            # save `lib.method()` function calls, first unwind the attribute chain
+            attr_names = []
+            current: Any = func
+            while isinstance(current, ast.Attribute):
+                attr_names.append(current.attr)
+                current = current.value
+
+            # save if the base module is in imports
+            if isinstance(current, ast.Name) and current.id in self.imports:
+                base_module = self.imports[current.id]
+                full_name = ".".join([base_module] + list(reversed(attr_names)))
+            else:
+                full_name = None
+
+        elif isinstance(func, ast.Name) and func.id in self.imports:
+            # save `foo()` function calls
+            full_name = self.imports[func.id]
+
+        else:
+            full_name = None
+
+        # extract arguments if we have a full function name
+        if full_name:
+            library, _, function = full_name.partition(".")
+            arg_strs = [ast.unparse(arg) for arg in node.args]
+            kw_strs = {kw.arg: ast.unparse(kw.value) for kw in node.keywords}
+
+            self.lib_calls[library].append(
+                {"function": function, "args": arg_strs, "kwargs": kw_strs}
+            )
 
         self.generic_visit(node)
 
@@ -85,9 +105,7 @@ def analyse_python_code(code: str) -> CodeData:
     analyser.visit(tree)
     return CodeData(
         valid=True,
-        defined_funcs=analyser.defined_funcs,
-        called_funcs=analyser.called_funcs,
-        stdlibs=analyser.stdlibs,
-        packages=analyser.packages,
-        imports=analyser.imports,
+        std_libs=analyser.std_libs,
+        ext_libs=analyser.ext_libs,
+        lib_calls=dict(analyser.lib_calls),
     )
