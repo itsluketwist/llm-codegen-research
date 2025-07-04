@@ -18,7 +18,7 @@ class PythonAnalyser(ast.NodeVisitor):
         self.std_libs: set[str] = set()
         self.ext_libs: set[str] = set()
         self.imports: dict[str, str] = {}
-        self.lib_calls: defaultdict[str, list[dict]] = defaultdict(list)
+        self.lib_usage: defaultdict[str, list[dict]] = defaultdict(list)
 
     def visit_Import(self, node: ast.Import):
         # save `import module` imports
@@ -59,41 +59,54 @@ class PythonAnalyser(ast.NodeVisitor):
         self.generic_visit(node)
 
     def visit_Call(self, node: ast.Call):
-        # Handle attribute calls: e.g., np.func() or np.sub.func()
-        func = node.func
-        if isinstance(func, ast.Attribute):
-            # save `lib.method()` function calls, first unwind the attribute chain
-            attr_names = []
-            current: Any = func
-            while isinstance(current, ast.Attribute):
-                attr_names.append(current.attr)
-                current = current.value
+        # handle attribute calls: e.g., np.func() or np.sub.func()
+        full_name = self._resolve_attribute(node=node.func)
 
-            # save if the base module is in imports
-            if isinstance(current, ast.Name) and current.id in self.imports:
-                base_module = self.imports[current.id]
-                full_name = ".".join([base_module] + list(reversed(attr_names)))
-            else:
-                full_name = None
-
-        elif isinstance(func, ast.Name) and func.id in self.imports:
-            # save `foo()` function calls
-            full_name = self.imports[func.id]
-
-        else:
-            full_name = None
-
-        # extract arguments if we have a full function name
         if full_name:
+            # extract arguments if we have a full function name
             library, _, function = full_name.partition(".")
             arg_strs = [ast.unparse(arg) for arg in node.args]
             kw_strs = {kw.arg: ast.unparse(kw.value) for kw in node.keywords}
 
-            self.lib_calls[library].append(
-                {"function": function, "args": arg_strs, "kwargs": kw_strs}
+            self.lib_usage[library].append(
+                {
+                    "type": "call",
+                    "member": function,
+                    "args": arg_strs,
+                    "kwargs": kw_strs,
+                }
             )
 
         self.generic_visit(node)
+
+    def visit_Attribute(self, node: ast.Attribute):
+        # handle any attribute access on imported modules/submodules
+        full_name = self._resolve_attribute(node)
+        if full_name:
+            library, _, member = full_name.partition(".")
+            self.lib_usage[library].append(
+                {
+                    "type": "access",
+                    "member": member,
+                }
+            )
+        self.generic_visit(node)
+
+    def _resolve_attribute(self, node: Any) -> str | None:
+        # resolve the full module path for an attribute call
+        attr_names = []
+        current: Any = node
+        # unwind attribute chains to build full module path
+        while isinstance(current, ast.Attribute):
+            attr_names.append(current.attr)
+            current = current.value
+        # save if the base module is in imports
+        if isinstance(current, ast.Name) and current.id in self.imports:
+            base = self.imports[current.id]
+            path = ".".join([base] + list(reversed(attr_names)))
+            return path
+        # not a valid import
+        return None
 
 
 def analyse_python_code(code: str) -> CodeData:
@@ -103,9 +116,25 @@ def analyse_python_code(code: str) -> CodeData:
     tree = ast.parse(code)
     analyser = PythonAnalyser()
     analyser.visit(tree)
+
+    lib_usage: dict[str, list[dict]] = {}
+    for library, usage in analyser.lib_usage.items():
+        lib_usage[library] = []
+        all_members = [u["member"] for u in usage]
+        call_members = [u["member"] for u in usage if u["type"] == "call"]
+        for record in usage:
+            # skip access records if the member is already used in a call
+            if record["type"] == "access":
+                if record["member"] in call_members or any(
+                    m.startswith(f"{record['member']}.") for m in all_members
+                ):
+                    continue
+
+            lib_usage[library].append(record)
+
     return CodeData(
         valid=True,
         std_libs=analyser.std_libs,
         ext_libs=analyser.ext_libs,
-        lib_calls=dict(analyser.lib_calls),
+        lib_usage=lib_usage,
     )

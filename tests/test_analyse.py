@@ -18,7 +18,7 @@ def process_data(data):
     response = get("https://api.example.com/data")
     data = np.array([1, 2, 3, 4, 5])
     another = np.sub_module.normalize(data=[1, 2, 3], response="response")
-    return np.process(data, response)
+    return np.process(data, response, np.random.randn)
 
 process_data("data")
 ```
@@ -81,7 +81,6 @@ def test_markdown():
 
     # expected python code block
     python_code_one = analysed.code_blocks[0]
-    print(python_code_one.error)
     assert python_code_one.language == "python"
     assert python_code_one.valid is True
     assert python_code_one.error is None
@@ -95,29 +94,37 @@ def test_markdown():
         "collections",
         "json",
     ]
-    assert python_code_one.lib_calls == {
+    assert python_code_one.lib_usage == {
         "requests": [
             {
-                "function": "get",
+                "type": "call",
+                "member": "get",
                 "args": ["'https://api.example.com/data'"],
                 "kwargs": {},
             }
         ],
         "numpy": [
             {
-                "function": "array",
+                "type": "call",
+                "member": "array",
                 "args": ["[1, 2, 3, 4, 5]"],
                 "kwargs": {},
             },
             {
-                "function": "sub_module.normalize",
+                "type": "call",
+                "member": "sub_module.normalize",
                 "args": [],
                 "kwargs": {"data": "[1, 2, 3]", "response": "'response'"},
             },
             {
-                "function": "process",
-                "args": ["data", "response"],
+                "type": "call",
+                "member": "process",
+                "args": ["data", "response", "np.random.randn"],
                 "kwargs": {},
+            },
+            {
+                "type": "access",
+                "member": "random.randn",
             },
         ],
     }
@@ -129,17 +136,19 @@ def test_markdown():
     assert python_code_two.error is None
     assert python_code_two.ext_libs == ["pandas"]
     assert python_code_two.std_libs == ["datetime"]
-    assert python_code_two.lib_calls == {
+    assert python_code_two.lib_usage == {
         "pandas": [
             {
-                "function": "read_csv",
+                "type": "call",
+                "member": "read_csv",
                 "args": ["f'data_{datetime.now().isoformat()}.csv'"],
                 "kwargs": {},
             }
         ],
         "datetime": [
             {
-                "function": "datetime.now",
+                "type": "call",
+                "member": "datetime.now",
                 "args": [],
                 "kwargs": {},
             }
@@ -153,7 +162,7 @@ def test_markdown():
     assert bash_code.error is None
     assert bash_code.ext_libs == []
     assert bash_code.std_libs == []
-    assert bash_code.lib_calls == {}
+    assert bash_code.lib_usage == {}
 
     # python code block with incorrect syntax
     bad_code = analysed.code_blocks[3]
@@ -162,7 +171,7 @@ def test_markdown():
     assert bad_code.error == "'(' was never closed (<unknown>, line 3)"
     assert bad_code.ext_libs == []
     assert bad_code.std_libs == []
-    assert bad_code.lib_calls == {}
+    assert bad_code.lib_usage == {}
 
     # unknown code block
     unknown_code = analysed.code_blocks[4]
@@ -172,7 +181,7 @@ def test_markdown():
     assert unknown_code.error is None
     assert unknown_code.ext_libs == []
     assert unknown_code.std_libs == []
-    assert unknown_code.lib_calls == {}
+    assert unknown_code.lib_usage == {}
 
     # check the representation methods
     assert unknown_code.markdown == "```\nfor import xxx)[\n```"
