@@ -136,5 +136,6 @@ def analyse_python_code(code: str) -> CodeData:
         valid=True,
         std_libs=analyser.std_libs,
         ext_libs=analyser.ext_libs,
+        imports=set(analyser.imports.values()),
         lib_usage=lib_usage,
     )

@@ -19,7 +19,8 @@ class CodeBlock:
     error: str | None  # only set if not valid
     std_libs: list[str]
     ext_libs: list[str]
-    lib_usage: dict[str, list[dict]]
+    lib_imports: list[str]  # all imports of modules and their members
+    lib_usage: dict[str, list[dict]]  # usage of libraries after being imported
 
     def __init__(
         self,
@@ -41,6 +42,7 @@ class CodeBlock:
             self.error = None
             self.std_libs = []
             self.ext_libs = []
+            self.lib_imports = []
             self.lib_usage = {}
 
         else:
@@ -49,6 +51,7 @@ class CodeBlock:
             self.error = code_data.error
             self.std_libs = code_data.std_libs
             self.ext_libs = code_data.ext_libs
+            self.lib_imports = code_data.lib_imports
             self.lib_usage = code_data.lib_usage
 
     def __repr__(self):

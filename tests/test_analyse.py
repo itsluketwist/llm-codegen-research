@@ -18,7 +18,7 @@ def process_data(data):
     response = get("https://api.example.com/data")
     data = np.array([1, 2, 3, 4, 5])
     another = np.sub_module.normalize(data=[1, 2, 3], response="response")
-    return np.process(data, response, np.random.randn)
+    return np.process(data.sort(), response, np.random.randn)
 
 process_data("data")
 ```
@@ -94,6 +94,14 @@ def test_markdown():
         "collections",
         "json",
     ]
+    assert python_code_one.lib_imports == [
+        "collections.defaultdict",
+        "cryptography.fernet.Fernet",
+        "json",
+        "numpy",
+        "pandas.DataFrame",
+        "requests.get",
+    ]
     assert python_code_one.lib_usage == {
         "requests": [
             {
@@ -119,7 +127,7 @@ def test_markdown():
             {
                 "type": "call",
                 "member": "process",
-                "args": ["data", "response", "np.random.randn"],
+                "args": ["data.sort()", "response", "np.random.randn"],
                 "kwargs": {},
             },
             {
@@ -136,6 +144,7 @@ def test_markdown():
     assert python_code_two.error is None
     assert python_code_two.ext_libs == ["pandas"]
     assert python_code_two.std_libs == ["datetime"]
+    assert python_code_two.lib_imports == ["datetime.datetime", "pandas"]
     assert python_code_two.lib_usage == {
         "pandas": [
             {
@@ -162,6 +171,7 @@ def test_markdown():
     assert bash_code.error is None
     assert bash_code.ext_libs == []
     assert bash_code.std_libs == []
+    assert bash_code.lib_imports == []
     assert bash_code.lib_usage == {}
 
     # python code block with incorrect syntax
@@ -171,6 +181,7 @@ def test_markdown():
     assert bad_code.error == "'(' was never closed (<unknown>, line 3)"
     assert bad_code.ext_libs == []
     assert bad_code.std_libs == []
+    assert bad_code.lib_imports == []
     assert bad_code.lib_usage == {}
 
     # unknown code block
@@ -181,6 +192,7 @@ def test_markdown():
     assert unknown_code.error is None
     assert unknown_code.ext_libs == []
     assert unknown_code.std_libs == []
+    assert unknown_code.lib_imports == []
     assert unknown_code.lib_usage == {}
 
     # check the representation methods
