@@ -1,6 +1,7 @@
 from llm_cgr import analyse, llm
 from llm_cgr.analyse import CodeBlock, CodeData, Markdown, analyse_code
 from llm_cgr.decorators import experiment
+from llm_cgr.enums import OptionsEnum
 from llm_cgr.json_utils import load_json, load_jsonl, save_json, save_jsonl
 from llm_cgr.llm import (
     BASE_SYSTEM_PROMPT,
@@ -33,6 +34,8 @@ __all__ = [
     "analyse_code",
     # decorators
     "experiment",
+    # enums
+    "OptionsEnum",
     # json utilities
     "load_json",
     "load_jsonl",
