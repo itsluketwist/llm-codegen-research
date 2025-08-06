@@ -5,9 +5,9 @@ import time
 from llm_cgr import TimeoutException, experiment, timeout
 
 
-def test_experiment_decorator(capfd):
+def test_experiment_decorator_success(capfd):
     """
-    Test the experiment decorator.
+    Test the experiment decorator when the experiment completes successfully.
     """
 
     @experiment
@@ -25,6 +25,28 @@ def test_experiment_decorator(capfd):
     assert output[0].startswith("===== STARTING EXPERIMENT")
     assert output[-1].startswith("===== FINISHED EXPERIMENT")
     assert len(output) == 2  # Only start and end messages should be printed
+
+
+def test_experiment_decorator_exception(capfd):
+    """
+    Test the experiment decorator when an exception is raised.
+    """
+
+    @experiment
+    def sample_experiment():
+        raise ValueError("Test error")
+
+    result = sample_experiment()
+    assert result is None
+
+    # capture the output
+    captured = capfd.readouterr()
+    output = captured.out.strip().split("\n")
+
+    # check the start and end messages
+    assert output[0].startswith("===== STARTING EXPERIMENT")
+    assert output[-1].startswith("===== EXPERIMENT FAILED")
+    assert len(output) == 10  # Start, error, and end messages should be printed
 
 
 def test_timeout_context():
