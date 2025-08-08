@@ -2,6 +2,8 @@
 
 import time
 
+import pytest
+
 from llm_cgr import TimeoutException, experiment, timeout
 
 
@@ -56,8 +58,6 @@ def test_timeout_context():
     with timeout(1):
         time.sleep(0.5)  # should complete fine
 
-    try:
+    with pytest.raises(TimeoutException, match="Execution exceeded 1s"):
         with timeout(1):
             time.sleep(2)  # should raise TimeoutException
-    except TimeoutException:
-        pass  # expected

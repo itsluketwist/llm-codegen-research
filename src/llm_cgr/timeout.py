@@ -5,7 +5,11 @@ import signal
 
 
 class TimeoutException(Exception):
-    pass
+    """Exception raised when a timeout occurs."""
+
+    def __init__(self, seconds: int):
+        super().__init__(f"Execution exceeded {seconds}s")
+        self.seconds = seconds
 
 
 @contextlib.contextmanager
@@ -19,7 +23,7 @@ def timeout(seconds: int):
 
     # function to execute when the timer expires
     def signal_handler(signum, frame):
-        raise TimeoutException()
+        raise TimeoutException(seconds=seconds)
 
     signal.setitimer(signal.ITIMER_REAL, seconds)  # start timer
     signal.signal(signal.SIGALRM, signal_handler)  # set end of timer signal
