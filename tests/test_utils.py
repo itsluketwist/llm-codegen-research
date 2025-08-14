@@ -48,7 +48,9 @@ def test_experiment_decorator_exception(capfd):
     # check the start and end messages
     assert output[0].startswith("===== STARTING EXPERIMENT")
     assert output[-1].startswith("===== EXPERIMENT FAILED")
-    assert len(output) == 10  # Start, error, and end messages should be printed
+    assert (
+        len(output) > 2
+    )  # exacted length depends on the host, at least start / error / end messages
 
 
 def test_timeout_context():
