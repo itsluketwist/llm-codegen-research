@@ -23,6 +23,11 @@ class OptionsEnum(StrEnum):
         """Return a list of all options."""
         return [type.value for type in cls]
 
+    @staticmethod
+    def _generate_next_value_(name: str, start, count, last_values) -> str:
+        """Auto-generate string values based on the member name."""
+        return name.lower()
+
     def __eq__(self, other) -> bool:
         """Case-insensitive equality checks."""
         return (
