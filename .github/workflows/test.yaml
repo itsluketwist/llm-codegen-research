@@ -18,8 +18,8 @@ jobs:
 
     strategy:
       matrix:
-        # test on the supported python version and the newest
-        python-version: ["3.11", "3.12", "3.13"]
+        # test on all versions supported (up to the newest)
+        python-version: ["3.11", "3.12", "3.13", "3.14"]
 
     steps:
 

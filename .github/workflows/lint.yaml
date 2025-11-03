@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        # only need to lint the supported version
+        # only need to lint the minimally supported version
         python-version: ["3.11"]
 
     steps:

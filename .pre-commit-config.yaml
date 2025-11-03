@@ -4,7 +4,7 @@ repos:
 
 # pre-commit
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: 'v5.0.0'
+    rev: 'v6.0.0'
     hooks:
       - id: check-case-conflict
       - id: end-of-file-fixer
@@ -17,14 +17,14 @@ repos:
 
 # isort
 -   repo: https://github.com/PyCQA/isort
-    rev: '6.0.1'
+    rev: '7.0.0'
     hooks:
       - id: isort
         args: ["--line-length=88", "--multi-line=3", "--lines-after-imports=2", "--trailing-comma"]
 
 # ruff linter and formatter
 -   repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.11.13
+    rev: v0.14.3
     hooks:
       - id: ruff
         types_or: [ python, pyi, jupyter ]
@@ -34,7 +34,7 @@ repos:
 
 # mypy type-checker
 -   repo: https://github.com/pre-commit/mirrors-mypy
-    rev: 'v1.16.0'
+    rev: 'v1.18.2'
     hooks:
       - id: mypy
         args: ["--show-error-codes", "--ignore-missing-imports"]
