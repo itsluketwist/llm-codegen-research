@@ -14,7 +14,7 @@ PYTHON_STDLIB = getattr(
 
 
 class PythonAnalyser(ast.NodeVisitor):
-    def __init__(self):
+    def __init__(self) -> None:
         self.std_libs: set[str] = set()
         self.ext_libs: set[str] = set()
         self.imports: dict[str, str] = {}

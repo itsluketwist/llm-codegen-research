@@ -12,12 +12,17 @@ def generate(
     temperature: float | None = None,
     top_p: float | None = None,
     max_tokens: int | None = None,
+    provider: str | None = None,
     **generate_kwargs,
 ) -> str:
     """
     Simple function to quickly prompt a model for a response.
     """
-    client = get_llm(model=model, system=system)
+    client = get_llm(
+        model=model,
+        system=system,
+        provider=provider,
+    )
     [result] = client.generate(
         user=user,
         samples=1,  # only a single response for a simple generate

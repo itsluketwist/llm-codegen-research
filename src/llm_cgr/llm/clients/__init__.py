@@ -9,18 +9,30 @@ from llm_cgr.llm.clients.protocol import GenerationProtocol
 from llm_cgr.llm.clients.together import TogetherAI_LLM
 
 
+PROVIDER_MAP: dict[str, type[Base_LLM]] = {
+    "anthropic": Anthropic_LLM,
+    "deepseek": DeepSeek_LLM,
+    "mistral": Mistral_LLM,
+    "openai": OpenAI_LLM,
+    "together": TogetherAI_LLM,
+}
+
+
 def get_llm(
     model: str,
     system: str | None = None,
     temperature: float | None = None,
     top_p: float | None = None,
     max_tokens: int | None = None,
+    provider: str | None = None,
 ) -> GenerationProtocol:
     """
     Initialise the correct LLM client for the given model.
     """
     llm_class: type[Base_LLM]
-    if "claude" in model:
+    if provider is not None:
+        llm_class = PROVIDER_MAP[provider]
+    elif "claude" in model:
         llm_class = Anthropic_LLM
     elif "gpt" in model or model.startswith("o"):
         llm_class = OpenAI_LLM
