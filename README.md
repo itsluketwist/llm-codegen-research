@@ -126,3 +126,9 @@ Use `uv` to add new dependencies into the project and `uv.lock`:
 ```shell
 uv add openai
 ```
+
+Or to upgrade dependencies:
+
+```shell
+uv sync --upgrade
+```
