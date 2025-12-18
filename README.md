@@ -132,3 +132,9 @@ Or to upgrade dependencies:
 ```shell
 uv sync --upgrade
 ```
+
+Check typings with `ty`:
+
+```shell
+ty check
+```

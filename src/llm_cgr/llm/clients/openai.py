@@ -1,8 +1,9 @@
 """Class to access LLMs via the OpenAI API."""
 
-from typing import Any
+from typing import Any, cast
 
 import openai
+from openai.types.responses import ResponseInputItemParam
 
 from llm_cgr.llm.clients.base import Base_LLM
 
@@ -55,18 +56,19 @@ class OpenAI_LLM(Base_LLM):
     def _get_response(
         self,
         model: str,
-        input: list[dict[str, Any]],
+        input: list[dict[str, str | list[dict[str, str]]]],
         system: str | None = None,
-        temperature: float | None = None,
-        top_p: float | None = None,
+        temperature: int | float | None = None,
+        top_p: int | float | None = None,
         max_tokens: int | None = None,
     ) -> str:
         """Generate a model response from the OpenAI API."""
+        self._client.responses.input_items
         response = self._client.responses.create(
-            input=input,
+            input=cast(list[ResponseInputItemParam], input),
             model=model,
-            temperature=temperature or openai.NOT_GIVEN,
-            top_p=top_p or openai.NOT_GIVEN,
-            max_output_tokens=max_tokens or openai.NOT_GIVEN,
+            temperature=temperature or openai.omit,
+            top_p=top_p or openai.omit,
+            max_output_tokens=max_tokens or openai.omit,
         )
         return response.output_text
