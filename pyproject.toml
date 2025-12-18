@@ -40,3 +40,6 @@ dev = [
     "ty",
     "uv",
 ]
+
+[project.scripts]
+test_cuda = "llm_cgr.scripts.test_cuda:main"
