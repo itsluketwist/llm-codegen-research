@@ -4,6 +4,7 @@ from llm_cgr.llm.clients.anthropic import Anthropic_LLM
 from llm_cgr.llm.clients.base import Base_LLM
 from llm_cgr.llm.clients.deepseek import DeepSeek_LLM
 from llm_cgr.llm.clients.mistral import Mistral_LLM
+from llm_cgr.llm.clients.nscale import Nscale_LLM
 from llm_cgr.llm.clients.openai import OpenAI_LLM
 from llm_cgr.llm.clients.protocol import GenerationProtocol
 from llm_cgr.llm.clients.together import TogetherAI_LLM
@@ -15,6 +16,7 @@ PROVIDER_MAP: dict[str, type[Base_LLM]] = {
     "mistral": Mistral_LLM,
     "openai": OpenAI_LLM,
     "together": TogetherAI_LLM,
+    "nscale": Nscale_LLM,
 }
 
 

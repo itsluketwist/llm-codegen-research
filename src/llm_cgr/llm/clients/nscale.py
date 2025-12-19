@@ -8,7 +8,7 @@ import openai
 from llm_cgr.llm.clients.base import Base_LLM
 
 
-class DeepSeek_LLM(Base_LLM):
+class Nscale_LLM(Base_LLM):
     """Class to access LLMs via the DeepSeek API, using the OpenAI interfaces."""
 
     def __init__(
@@ -20,9 +20,9 @@ class DeepSeek_LLM(Base_LLM):
         max_tokens: int | None = None,
     ) -> None:
         """
-        Initialise the DeepSeek client.
+        Initialise the NSCALE client.
 
-        Requires the DEEPSEEK_API_KEY environment variable to be set.
+        Requires the NSCALE_SERVICE_TOKEN environment variable to be set.
         """
         super().__init__(
             model=model,
@@ -32,8 +32,8 @@ class DeepSeek_LLM(Base_LLM):
             max_tokens=max_tokens,
         )
         self._client = openai.OpenAI(
-            api_key=os.environ["DEEPSEEK_API_KEY"],
-            base_url="https://api.deepseek.com",
+            api_key=os.environ["NSCALE_SERVICE_TOKEN"],
+            base_url="https://inference.api.nscale.com/v1",
         )
 
     def _build_message(
