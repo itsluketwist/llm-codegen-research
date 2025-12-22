@@ -22,7 +22,7 @@ class Nscale_LLM(Base_LLM):
         """
         Initialise the NSCALE client.
 
-        Requires the NSCALE_SERVICE_TOKEN environment variable to be set.
+        Requires the NSCALE_API_KEY environment variable to be set.
         """
         super().__init__(
             model=model,
@@ -32,7 +32,7 @@ class Nscale_LLM(Base_LLM):
             max_tokens=max_tokens,
         )
         self._client = openai.OpenAI(
-            api_key=os.environ["NSCALE_SERVICE_TOKEN"],
+            api_key=os.environ["NSCALE_API_KEY"],
             base_url="https://inference.api.nscale.com/v1",
         )
 
