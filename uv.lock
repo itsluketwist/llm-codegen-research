@@ -458,6 +458,12 @@ wheels = [
 ]
 
 [[package]]
+name = "esprima"
+version = "4.0.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/cc/a1/50fccd68a12bcfc27adfc9969c090286670a9109a0259f3f70943390b721/esprima-4.0.1.tar.gz", hash = "sha256:08db1a876d3c2910db9cfaeb83108193af5411fc3a3a66ebefacd390d21323ee", size = 47021, upload-time = "2018-08-24T13:59:11.374Z" }
+
+[[package]]
 name = "eval-type-backport"
 version = "0.2.2"
 source = { registry = "https://pypi.org/simple" }
@@ -787,6 +793,7 @@ name = "llm-codegen-research"
 source = { editable = "." }
 dependencies = [
     { name = "anthropic" },
+    { name = "esprima" },
     { name = "genbadge", extra = ["coverage"] },
     { name = "mistralai" },
     { name = "openai" },
@@ -805,6 +812,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "anthropic" },
+    { name = "esprima" },
     { name = "genbadge", extras = ["coverage"] },
     { name = "mistralai" },
     { name = "openai" },

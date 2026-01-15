@@ -23,6 +23,7 @@ keywords = ["llm", "code-generation", "research", "prompting", "nlp"]
 requires-python = ">=3.11"
 dependencies = [
     "anthropic",
+    "esprima",
     "genbadge[coverage]",
     "mistralai",
     "openai",

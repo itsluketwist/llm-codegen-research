@@ -7,6 +7,36 @@ from llm_cgr.analyse.regexes import CODE_BLOCK_REGEX
 from llm_cgr.defaults import DEFAULT_CODEBLOCK_LANGUAGE
 
 
+LANGUAGE_ALIASES: dict[str, str] = {
+    "py": "python",
+    "python3": "python",
+    "js": "javascript",
+    "jsx": "javascript",
+    "ts": "typescript",
+    "tsx": "typescript",
+    "sh": "bash",
+    "shell": "bash",
+    "zsh": "bash",
+    "rb": "ruby",
+    "rs": "rust",
+    "yml": "yaml",
+    "md": "markdown",
+    "dockerfile": "docker",
+}
+
+
+def normalise_language(language: str | None) -> str | None:
+    """
+    Normalise a language identifier to its canonical form.
+
+    Returns the canonical language name, or the original if no alias exists.
+    """
+    if language is None:
+        return None
+    cleaned = language.strip().lower()
+    return LANGUAGE_ALIASES.get(cleaned, cleaned)
+
+
 @dataclass
 class CodeBlock:
     """
@@ -28,7 +58,7 @@ class CodeBlock:
         text: str,
         default_language: str | None = DEFAULT_CODEBLOCK_LANGUAGE,
     ):
-        self.language = language.strip().lower() if language else None
+        self.language = normalise_language(language)
         self.text = text.strip()
 
         code_data = analyse_code(

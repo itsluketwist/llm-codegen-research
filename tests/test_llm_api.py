@@ -17,6 +17,21 @@ def test_generate(model):
     assert len(response) > 0
 
 
+def test_generate_specify_provider():
+    """
+    Test the generate method when a provider is specified.
+    """
+    user = "How many r's are in 'strawberry'?"
+    response = generate(
+        user=user,
+        model="Qwen/Qwen2.5-Coder-3B-Instruct",
+        system=BASE_SYSTEM_PROMPT,
+        provider="nscale",
+    )
+    assert isinstance(response, str)
+    assert len(response) > 0
+
+
 def test_generate_list(openai_model):
     """
     Test the generate_list method.

@@ -1,4 +1,5 @@
 from llm_cgr.analyse.languages.code_data import CodeData
+from llm_cgr.analyse.languages.javascript import analyse_javascript_code
 from llm_cgr.analyse.languages.python import analyse_python_code
 
 
@@ -9,6 +10,9 @@ def analyse_code(code: str, language: str | None) -> CodeData:
     try:
         if language == "python":
             return analyse_python_code(code=code)
+        elif language == "javascript":
+            return analyse_javascript_code(code=code)
+
     except Exception as exc:
         return CodeData(
             valid=False,
