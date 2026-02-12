@@ -12,6 +12,7 @@ def save_json(
     """
     with open(file_path, mode="w", encoding="utf-8") as f:
         json.dump(obj=data, fp=f, indent=4)
+        f.write("\n")
 
 
 def save_jsonl(
