@@ -13,6 +13,7 @@ import { get } from 'axios';
 import fs from 'fs';
 import { createHash } from 'crypto';
 import * as path from 'path';
+const { extractColumn } = require('df-column-a-extractor');
 
 async function processData(data) {
     const response = await get("https://api.example.com/data");
@@ -67,7 +68,7 @@ def test_markdown():
     assert f"{analysed}" == TEST_LLM_RESPONSE
     assert len(analysed.code_blocks) == 5
     assert [cb.__repr__() for cb in analysed.code_blocks] == [
-        "CodeBlock(language=javascript, lines=15)",
+        "CodeBlock(language=javascript, lines=16)",
         "CodeBlock(language=javascript, lines=5)",
         "CodeBlock(language=bash, lines=1)",
         "CodeBlock(language=javascript, lines=3)",
@@ -83,6 +84,7 @@ def test_markdown():
     assert js_code_one.error is None
     assert js_code_one.ext_libs == [
         "axios",
+        "df-column-a-extractor",
         "lodash",
     ]
     assert js_code_one.std_libs == [
@@ -93,6 +95,7 @@ def test_markdown():
     assert js_code_one.lib_imports == [
         "axios.get",
         "crypto.createHash",
+        "df-column-a-extractor.extractColumn",
         "fs",
         "lodash",
         "path",

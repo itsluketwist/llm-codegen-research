@@ -85,23 +85,29 @@ class JavaScriptAnalyser:
                 elif isinstance(child, esprima.nodes.Node):
                     self.visit(child)
 
-    def visit_ImportDeclaration(self, node: Any) -> None:
-        """Handle import declarations."""
-        source = node.source.value
+    def _register_module(self, source: str) -> None:
+        """Classify a module source string as a std or ext lib and register it."""
         top_level = source.split("/")[0]
 
         if top_level.startswith("."):
+            # relative imports are not tracked as libs
             pass
         elif top_level in NODEJS_BUILTINS or source.startswith("node:"):
             clean_name = top_level.removeprefix("node:")
             self.std_libs.add(clean_name)
         else:
             if top_level.startswith("@"):
+                # scoped npm packages like @babel/core
                 parts = source.split("/")
                 clean_name = f"{parts[0]}/{parts[1]}" if len(parts) > 1 else parts[0]
             else:
                 clean_name = top_level
             self.ext_libs.add(clean_name)
+
+    def visit_ImportDeclaration(self, node: Any) -> None:
+        """Handle ES module import declarations."""
+        source = node.source.value
+        self._register_module(source)
 
         for specifier in node.specifiers:
             if specifier.type == "ImportDefaultSpecifier":
@@ -114,6 +120,32 @@ class JavaScriptAnalyser:
             elif specifier.type == "ImportNamespaceSpecifier":
                 local_name = specifier.local.name
                 self.imports[local_name] = source
+
+    def visit_VariableDeclarator(self, node: Any) -> None:
+        """Handle CommonJS require() calls assigned to variables."""
+        # only process declarators whose init is a require() call with a string arg
+        if (
+            node.init is None
+            or node.init.type != "CallExpression"
+            or node.init.callee.type != "Identifier"
+            or node.init.callee.name != "require"
+            or not node.init.arguments
+            or node.init.arguments[0].type != "Literal"
+        ):
+            return
+
+        source = node.init.arguments[0].value
+        self._register_module(source)
+
+        if node.id.type == "Identifier":
+            # e.g. const lib = require('lib')
+            self.imports[node.id.name] = source
+        elif node.id.type == "ObjectPattern":
+            # e.g. const { func } = require('lib') — each destructured name is tracked
+            for prop in node.id.properties:
+                local_name = prop.value.name
+                imported_name = prop.key.name
+                self.imports[local_name] = f"{source}.{imported_name}"
 
     def visit_CallExpression(self, node: Any) -> None:
         """Handle function call expressions."""
