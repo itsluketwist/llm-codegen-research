@@ -46,6 +46,13 @@ Install directly from PyPI, using pip:
 pip install llm-codegen-research
 ```
 
+This installs the core package, which includes code parsing and analysis utilities.
+To also install the LLM API client libraries, use the `api` extra:
+
+```shell
+pip install llm-codegen-research[api]
+```
+
 ## *usage*
 
 First configure environment vairables for the APIs you want to use:

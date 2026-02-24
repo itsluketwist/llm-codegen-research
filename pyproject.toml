@@ -22,9 +22,12 @@ classifiers = [
 keywords = ["llm", "code-generation", "research", "prompting", "nlp"]
 requires-python = ">=3.11"
 dependencies = [
-    "anthropic",
     "esprima",
-    "genbadge[coverage]",
+]
+
+[project.optional-dependencies]
+api = [
+    "anthropic",
     "mistralai",
     "openai",
     "together",
@@ -35,6 +38,7 @@ Homepage = "https://github.com/itsluketwist/llm-codegen-research"
 
 [dependency-groups]
 dev = [
+    "genbadge[coverage]",
     "pre-commit",
     "pytest",
     "pytest-cov",
