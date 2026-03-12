@@ -67,8 +67,8 @@ class OpenAI_LLM(Base_LLM):
         response = self._client.responses.create(
             input=cast(list[ResponseInputItemParam], input),
             model=model,
-            temperature=temperature or openai.omit,
-            top_p=top_p or openai.omit,
-            max_output_tokens=max_tokens or openai.omit,
+            temperature=temperature if temperature is not None else openai.omit,
+            top_p=top_p if top_p is not None else openai.omit,
+            max_output_tokens=max_tokens if max_tokens is not None else openai.omit,
         )
         return response.output_text

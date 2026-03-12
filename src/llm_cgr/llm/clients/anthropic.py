@@ -71,8 +71,8 @@ class Anthropic_LLM(Base_LLM):
             model=model,
             system=system or self._system or anthropic.NOT_GIVEN,
             messages=input,
-            temperature=temperature or anthropic.NOT_GIVEN,
-            top_p=top_p or anthropic.NOT_GIVEN,
-            max_tokens=max_tokens or DEFAULT_MAX_TOKENS,
+            temperature=temperature if temperature is not None else anthropic.NOT_GIVEN,
+            top_p=top_p if top_p is not None else anthropic.NOT_GIVEN,
+            max_tokens=max_tokens if max_tokens is not None else DEFAULT_MAX_TOKENS,
         )
         return response.content[0].text

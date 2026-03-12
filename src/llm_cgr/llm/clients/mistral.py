@@ -71,8 +71,8 @@ class Mistral_LLM(Base_LLM):
         response = self._client.chat.complete(
             model=model,
             messages=input,
-            temperature=temperature or mistralai.UNSET,
+            temperature=temperature if temperature is not None else mistralai.UNSET,
             top_p=top_p,
-            max_tokens=max_tokens or mistralai.UNSET,
+            max_tokens=max_tokens if max_tokens is not None else mistralai.UNSET,
         )
         return response.choices[0].message.content
