@@ -32,10 +32,12 @@ repos:
       - id: ruff-format
         types_or: [ python, pyi, jupyter ]
 
-# mypy type-checker
--   repo: https://github.com/pre-commit/mirrors-mypy
-    rev: 'v1.19.1'
+# ty type-checker (local hook as no official pre-commit repo exists yet)
+-   repo: local
     hooks:
-      - id: mypy
-        args: ["--show-error-codes", "--ignore-missing-imports"]
-        additional_dependencies: [ types-requests ]
+      - id: ty
+        name: ty
+        entry: uv run ty check
+        language: system
+        types: [python]
+        pass_filenames: false

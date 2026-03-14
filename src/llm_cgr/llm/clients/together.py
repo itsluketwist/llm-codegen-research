@@ -1,6 +1,6 @@
 """Class to access LLMs via the TogetherAI API."""
 
-from typing import Any
+from typing import Any, cast
 
 import together
 
@@ -64,9 +64,12 @@ class TogetherAI_LLM(Base_LLM):
         """Generate a model response from the TogetherAI API."""
         response = self._client.chat.completions.create(
             model=model,
-            messages=input,
-            temperature=temperature,
-            top_p=top_p,
-            max_tokens=max_tokens,
+            messages=cast(Any, input),
+            temperature=temperature if temperature is not None else together.omit,
+            top_p=top_p if top_p is not None else together.omit,
+            max_tokens=max_tokens if max_tokens is not None else together.omit,
         )
-        return response.choices[0].message.content
+        # cast to Any first as together doesn't publicly export the message type,
+        # then cast content to str as text completions always have it set
+        message = cast(Any, response.choices[0].message)
+        return cast(str, message.content)

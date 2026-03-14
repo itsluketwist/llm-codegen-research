@@ -1,8 +1,9 @@
 """Classes to access LLMs via the Anthropic Claude API."""
 
-from typing import Any
+from typing import Any, cast
 
 import anthropic
+from anthropic.types import MessageParam, TextBlock
 
 from llm_cgr.defaults import DEFAULT_MAX_TOKENS
 from llm_cgr.llm.clients.base import Base_LLM
@@ -69,10 +70,11 @@ class Anthropic_LLM(Base_LLM):
         """Generate a model response from the Anthropic API."""
         response = self._client.messages.create(
             model=model,
-            system=system or self._system or anthropic.NOT_GIVEN,
-            messages=input,
-            temperature=temperature if temperature is not None else anthropic.NOT_GIVEN,
-            top_p=top_p if top_p is not None else anthropic.NOT_GIVEN,
+            system=system or self._system or anthropic.omit,
+            messages=cast(list[MessageParam], input),
+            temperature=temperature if temperature is not None else anthropic.omit,
+            top_p=top_p if top_p is not None else anthropic.omit,
             max_tokens=max_tokens if max_tokens is not None else DEFAULT_MAX_TOKENS,
         )
-        return response.content[0].text
+        # cast to TextBlock as non-tool, non-thinking requests always return text
+        return cast(TextBlock, response.content[0]).text

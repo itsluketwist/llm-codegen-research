@@ -1,9 +1,10 @@
 """Class to access LLMs via the OpenAI API."""
 
 import os
-from typing import Any
+from typing import Any, cast
 
 import openai
+from openai.types.chat import ChatCompletionMessageParam
 
 from llm_cgr.llm.clients.base import Base_LLM
 
@@ -67,10 +68,11 @@ class Nscale_LLM(Base_LLM):
     ) -> str:
         """Generate a model response from the OpenAI API."""
         response = self._client.chat.completions.create(
-            messages=input,
+            messages=cast(list[ChatCompletionMessageParam], input),
             model=model,
             temperature=temperature if temperature is not None else openai.omit,
             top_p=top_p if top_p is not None else openai.omit,
             max_completion_tokens=max_tokens if max_tokens is not None else openai.omit,
         )
-        return response.choices[0].message.content
+        # cast to str as text completions always return string content
+        return cast(str, response.choices[0].message.content)

@@ -25,10 +25,10 @@ test:
 	uv run pytest
 
 test-local:
-	uv run pytest --ignore=tests/test_llm_api.py
+	uv run pytest -m "not api"
 
 test-api:
-	uv run pytest tests/test_llm_api.py
+	uv run pytest -m "api"
 
 test-coverage:
 	uv run pytest --cov=src/ --cov-report=term-missing
