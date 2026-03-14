@@ -1,6 +1,12 @@
 """Test our connection and usage of the LLM APIs."""
 
+import pytest
+
 from llm_cgr import BASE_SYSTEM_PROMPT, generate, generate_bool, generate_list, get_llm
+
+
+# mark all tests in this file as api tests, so they can be excluded in ci
+pytestmark = pytest.mark.api
 
 
 def test_generate(model):

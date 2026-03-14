@@ -46,5 +46,11 @@ dev = [
     "uv",
 ]
 
+[tool.pytest.ini_options]
+markers = [
+    # tests that make real external api calls - excluded from ci runs
+    "api: marks tests as making external api calls",
+]
+
 [project.scripts]
 test_cuda = "llm_cgr.scripts.test_cuda:main"
