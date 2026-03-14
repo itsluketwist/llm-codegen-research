@@ -3,7 +3,7 @@
 import os
 from typing import Any
 
-import mistralai
+from mistralai import client
 
 from llm_cgr.llm.clients.base import Base_LLM
 
@@ -31,7 +31,7 @@ class Mistral_LLM(Base_LLM):
             top_p=top_p,
             max_tokens=max_tokens,
         )
-        self._client = mistralai.Mistral(
+        self._client = client.Mistral(
             api_key=os.environ["MISTRAL_API_KEY"],
         )
 
@@ -71,8 +71,8 @@ class Mistral_LLM(Base_LLM):
         response = self._client.chat.complete(
             model=model,
             messages=input,
-            temperature=temperature if temperature is not None else mistralai.UNSET,
+            temperature=temperature if temperature is not None else client.UNSET,
             top_p=top_p,
-            max_tokens=max_tokens if max_tokens is not None else mistralai.UNSET,
+            max_tokens=max_tokens if max_tokens is not None else client.UNSET,
         )
         return response.choices[0].message.content
