@@ -1,4 +1,5 @@
 from enum import auto
+from typing import Any
 
 from llm_cgr import OptionsEnum
 
@@ -26,8 +27,8 @@ def test_options_enum():
     assert (TestEnum.ONE != "One") is False
     assert (TestEnum.ONE != "ONE") is False
 
-    # check that the enum can be hashed
-    test_dict = {TestEnum.TWO: "value"}
+    # check that the enum can be hashed and string keys match enum keys at runtime
+    test_dict: dict[Any, str] = {TestEnum.TWO: "value"}
     assert test_dict[TestEnum.TWO] == "value"
     assert test_dict["two"] == "value"
     assert {TestEnum.THREE} == {"three"}
