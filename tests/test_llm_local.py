@@ -10,8 +10,10 @@ from llm_cgr import (
     Mistral_LLM,
     OpenAI_LLM,
     TogetherAI_LLM,
+    Tool,
     generate_bool,
     generate_list,
+    get_llm,
 )
 
 
@@ -127,6 +129,30 @@ def test_build_input():
             "content": "What is the capital of Norway?",
         },
     ]
+
+
+def test_tools_unsupported_provider():
+    """
+    Test that passing tools to a non-OpenAI provider raises NotImplementedError.
+
+    No API call is made because the error fires inside get_llm() before any
+    network request.
+    """
+    dummy_tool = Tool(
+        name="dummy",
+        description="A dummy tool.",
+        parameters={"type": "object", "properties": {}},
+        fn=lambda: "result",
+    )
+
+    # anthropic is not yet supported for tool calls
+    with pytest.raises(
+        NotImplementedError, match="Tool calls are only supported for OpenAI models."
+    ):
+        get_llm(
+            model="claude-3-5-haiku-20241022",
+            tools=[dummy_tool],
+        )
 
 
 @pytest.mark.parametrize(

@@ -5,7 +5,9 @@ from llm_cgr.llm.clients import (
     GenerationProtocol,
     Mistral_LLM,
     OpenAI_LLM,
+    OpenAI_Tool_LLM,
     TogetherAI_LLM,
+    Tool,
     get_llm,
 )
 from llm_cgr.llm.generate import generate, generate_bool, generate_list
@@ -24,6 +26,8 @@ __all__ = [
     "GenerationProtocol",
     "Mistral_LLM",
     "OpenAI_LLM",
+    "OpenAI_Tool_LLM",
+    "Tool",
     "TogetherAI_LLM",
     "get_llm",
     "generate",
