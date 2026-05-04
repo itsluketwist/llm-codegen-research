@@ -6,7 +6,12 @@ from llm_cgr.llm.clients.deepseek import DeepSeek_LLM
 from llm_cgr.llm.clients.mistral import Mistral_LLM
 from llm_cgr.llm.clients.nscale import Nscale_LLM
 from llm_cgr.llm.clients.openai import OpenAI_LLM
-from llm_cgr.llm.clients.openai_tool import OpenAI_Tool_LLM, Tool
+from llm_cgr.llm.clients.openai_tool import (
+    MAX_TOOL_CALLS,
+    MAX_TOOL_ITERATIONS,
+    OpenAI_Tool_LLM,
+    Tool,
+)
 from llm_cgr.llm.clients.protocol import GenerationProtocol
 from llm_cgr.llm.clients.together import TogetherAI_LLM
 
@@ -29,6 +34,8 @@ def get_llm(
     max_tokens: int | None = None,
     provider: str | None = None,
     tools: list[Tool] | None = None,
+    max_tool_iterations: int = MAX_TOOL_ITERATIONS,
+    max_tool_calls: int = MAX_TOOL_CALLS,
 ) -> GenerationProtocol:
     """
     Initialise the correct LLM client for the given model.
@@ -63,6 +70,8 @@ def get_llm(
             temperature=temperature,
             top_p=top_p,
             max_tokens=max_tokens,
+            max_tool_iterations=max_tool_iterations,
+            max_tool_calls=max_tool_calls,
         )
 
     return llm_class(

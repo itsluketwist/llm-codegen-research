@@ -10,8 +10,11 @@ from openai.types.responses import ResponseFunctionToolCall, ResponseInputItemPa
 from llm_cgr.llm.clients.openai import OpenAI_LLM
 
 
-# maximum number of tool-call iterations per request, to prevent runaway loops
-MAX_TOOL_ITERATIONS: int = 10
+# maximum tool-call rounds allowed within a single generate() or chat() call
+MAX_TOOL_ITERATIONS: int = 5
+
+# maximum total tool calls allowed across the lifetime of a client instance
+MAX_TOOL_CALLS: int = 10
 
 
 @dataclass
@@ -51,11 +54,17 @@ class OpenAI_Tool_LLM(OpenAI_LLM):
         temperature: float | None = None,
         top_p: float | None = None,
         max_tokens: int | None = None,
+        max_tool_iterations: int = MAX_TOOL_ITERATIONS,
+        max_tool_calls: int = MAX_TOOL_CALLS,
     ) -> None:
         """
         Initialise the OpenAI tool client.
 
         Requires the OPENAI_API_KEY environment variable to be set.
+        max_tool_iterations caps tool-call rounds within a single request.
+        max_tool_calls caps the cumulative total across all requests on this
+        instance. When either limit is reached, the model is sent a message
+        asking it to answer immediately without any further tool calls.
         """
         super().__init__(
             model=model,
@@ -65,6 +74,8 @@ class OpenAI_Tool_LLM(OpenAI_LLM):
             max_tokens=max_tokens,
         )
         self._tools = tools
+        self._max_tool_iterations = max_tool_iterations
+        self._max_tool_calls = max_tool_calls
         # cumulative count of individual tool calls made by this instance
         self._tool_calls: int = 0
 
@@ -90,6 +101,43 @@ class OpenAI_Tool_LLM(OpenAI_LLM):
             "parameters": tool.parameters,
         }
 
+    def _force_final_answer(
+        self,
+        current_input: list[Any],
+        model: str,
+        temperature: float | None,
+        top_p: float | None,
+        max_tokens: int | None,
+    ) -> str:
+        """Force the model to produce a text answer after a limit is reached.
+
+        Appends a user message telling the model it has used all its allowed
+        tool calls, then calls the API one final time without any tools so the
+        model cannot make further calls.
+
+        Returns the model's final text response.
+        """
+        # tell the model it must answer now — no more tool calls are allowed
+        current_input.append(
+            self._build_message(
+                role="user",
+                content=(
+                    "You have reached the maximum number of tool calls allowed. "
+                    "Please provide your final answer now based on the information "
+                    "you have gathered, without calling any more tools."
+                ),
+            )
+        )
+        response = self._client.responses.create(
+            input=cast(list[ResponseInputItemParam], current_input),
+            model=model,
+            temperature=temperature if temperature is not None else openai.omit,
+            top_p=top_p if top_p is not None else openai.omit,
+            max_output_tokens=max_tokens if max_tokens is not None else openai.omit,
+            # no tools provided: the model cannot make further tool calls
+        )
+        return response.output_text
+
     def _run_tool_loop(
         self,
         messages: list[dict[str, Any]],
@@ -101,8 +149,12 @@ class OpenAI_Tool_LLM(OpenAI_LLM):
         """Run the agentic tool-call loop for a single turn.
 
         Calls the OpenAI API in a loop, executing any tool calls the model
-        requests, until the model produces a final text response or the
-        MAX_TOOL_ITERATIONS safety limit is reached.
+        requests, until the model produces a final text response or a limit is
+        reached. Two limits apply:
+          - max_tool_iterations: rounds allowed within this single call.
+          - max_tool_calls: cumulative total across all calls on this instance.
+        When either limit is hit, _force_final_answer() is called, which tells
+        the model to answer immediately without making any further tool calls.
 
         Returns the final text response.
         """
@@ -118,7 +170,7 @@ class OpenAI_Tool_LLM(OpenAI_LLM):
         # and the richer tool-call dicts without fighting the type checker.
         current_input: list[Any] = list(messages)
 
-        for _ in range(MAX_TOOL_ITERATIONS):
+        for _ in range(self._max_tool_iterations):
             response = self._client.responses.create(
                 input=cast(list[ResponseInputItemParam], current_input),
                 model=model,
@@ -136,6 +188,18 @@ class OpenAI_Tool_LLM(OpenAI_LLM):
             # no tool calls means the model has produced its final text answer
             if not function_calls:
                 return response.output_text
+
+            # check the overall cumulative limit before processing these calls.
+            # if adding them would exceed the limit, force a final answer now
+            # without executing any of the pending tool calls.
+            if self._tool_calls + len(function_calls) > self._max_tool_calls:
+                return self._force_final_answer(
+                    current_input=current_input,
+                    model=model,
+                    temperature=temperature,
+                    top_p=top_p,
+                    max_tokens=max_tokens,
+                )
 
             # increment the cumulative counter; parallel calls count individually
             self._tool_calls += len(function_calls)
@@ -172,8 +236,14 @@ class OpenAI_Tool_LLM(OpenAI_LLM):
 
             # loop continues: enriched input is sent back to the model
 
-        # safety fallback: return whatever text the model produced on the last turn
-        return response.output_text
+        # max_tool_iterations exhausted — force the model to answer now
+        return self._force_final_answer(
+            current_input=current_input,
+            model=model,
+            temperature=temperature,
+            top_p=top_p,
+            max_tokens=max_tokens,
+        )
 
     def generate(
         self,
