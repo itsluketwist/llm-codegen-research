@@ -1,4 +1,4 @@
-"""Class to access LLMs via the OpenAI API."""
+"""Class to access LLMs via the DeepSeek API."""
 
 import os
 from typing import Any, cast
@@ -19,11 +19,13 @@ class DeepSeek_LLM(Base_LLM):
         temperature: float | None = None,
         top_p: float | None = None,
         max_tokens: int | None = None,
+        enable_reasoning: bool = False,
     ) -> None:
         """
         Initialise the DeepSeek client.
 
         Requires the DEEPSEEK_API_KEY environment variable to be set.
+        Set enable_reasoning=True when using a reasoning model (e.g. deepseek-reasoner).
         """
         super().__init__(
             model=model,
@@ -31,6 +33,7 @@ class DeepSeek_LLM(Base_LLM):
             temperature=temperature,
             top_p=top_p,
             max_tokens=max_tokens,
+            enable_reasoning=enable_reasoning,
         )
         self._client = openai.OpenAI(
             api_key=os.environ["DEEPSEEK_API_KEY"],
@@ -65,8 +68,8 @@ class DeepSeek_LLM(Base_LLM):
         temperature: float | None = None,
         top_p: float | None = None,
         max_tokens: int | None = None,
-    ) -> str:
-        """Generate a model response from the OpenAI API."""
+    ) -> tuple[str, str | None]:
+        """Generate a model response from the DeepSeek API."""
         response = self._client.chat.completions.create(
             messages=cast(list[ChatCompletionMessageParam], input),
             model=model,
@@ -74,5 +77,10 @@ class DeepSeek_LLM(Base_LLM):
             top_p=top_p if top_p is not None else openai.omit,
             max_completion_tokens=max_tokens if max_tokens is not None else openai.omit,
         )
+        message = response.choices[0].message
+
+        # chain-of-thought from reasoning models (e.g. deepseek-reasoner); None otherwise
+        reasoning = getattr(message, "reasoning_content", None)
+
         # cast to str as text completions always return string content
-        return cast(str, response.choices[0].message.content)
+        return cast(str, message.content), reasoning

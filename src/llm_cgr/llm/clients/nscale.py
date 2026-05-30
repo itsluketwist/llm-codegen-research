@@ -65,7 +65,7 @@ class Nscale_LLM(Base_LLM):
         temperature: float | None = None,
         top_p: float | None = None,
         max_tokens: int | None = None,
-    ) -> str:
+    ) -> tuple[str, str | None]:
         """Generate a model response from the OpenAI API."""
         response = self._client.chat.completions.create(
             messages=cast(list[ChatCompletionMessageParam], input),
@@ -75,4 +75,4 @@ class Nscale_LLM(Base_LLM):
             max_completion_tokens=max_tokens if max_tokens is not None else openai.omit,
         )
         # cast to str as text completions always return string content
-        return cast(str, response.choices[0].message.content)
+        return cast(str, response.choices[0].message.content), None

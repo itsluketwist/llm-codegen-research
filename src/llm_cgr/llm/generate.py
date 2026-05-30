@@ -1,5 +1,7 @@
 """API utilities for interfacing with the generation models."""
 
+from typing import cast
+
 from llm_cgr.defaults import DEFAULT_MODEL
 from llm_cgr.llm.clients import get_llm
 from llm_cgr.llm.prompts import BOOL_SYSTEM_PROMPT, LIST_SYSTEM_PROMPT
@@ -31,7 +33,8 @@ def generate(
         max_tokens=max_tokens,
         **generate_kwargs,
     )
-    return result
+    # enable_reasoning is False by default, so result is always a plain string
+    return cast(str, result)
 
 
 def generate_list(

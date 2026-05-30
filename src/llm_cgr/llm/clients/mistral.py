@@ -66,7 +66,7 @@ class Mistral_LLM(Base_LLM):
         temperature: float | None = None,
         top_p: float | None = None,
         max_tokens: int | None = None,
-    ) -> str:
+    ) -> tuple[str, str | None]:
         """Generate a model response from the MistralAI API."""
         response = self._client.chat.complete(
             model=model,
@@ -75,4 +75,4 @@ class Mistral_LLM(Base_LLM):
             top_p=top_p,
             max_tokens=max_tokens if max_tokens is not None else client.UNSET,
         )
-        return response.choices[0].message.content
+        return response.choices[0].message.content, None

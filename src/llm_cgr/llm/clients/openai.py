@@ -61,7 +61,7 @@ class OpenAI_LLM(Base_LLM):
         temperature: int | float | None = None,
         top_p: int | float | None = None,
         max_tokens: int | None = None,
-    ) -> str:
+    ) -> tuple[str, str | None]:
         """Generate a model response from the OpenAI API."""
         self._client.responses.input_items
         response = self._client.responses.create(
@@ -71,4 +71,4 @@ class OpenAI_LLM(Base_LLM):
             top_p=top_p if top_p is not None else openai.omit,
             max_output_tokens=max_tokens if max_tokens is not None else openai.omit,
         )
-        return response.output_text
+        return response.output_text, None

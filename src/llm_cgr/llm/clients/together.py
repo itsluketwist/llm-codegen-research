@@ -60,7 +60,7 @@ class TogetherAI_LLM(Base_LLM):
         temperature: float | None = None,
         top_p: float | None = None,
         max_tokens: int | None = None,
-    ) -> str:
+    ) -> tuple[str, str | None]:
         """Generate a model response from the TogetherAI API."""
         response = self._client.chat.completions.create(
             model=model,
@@ -72,4 +72,4 @@ class TogetherAI_LLM(Base_LLM):
         # cast to Any first as together doesn't publicly export the message type,
         # then cast content to str as text completions always have it set
         message = cast(Any, response.choices[0].message)
-        return cast(str, message.content)
+        return cast(str, message.content), None

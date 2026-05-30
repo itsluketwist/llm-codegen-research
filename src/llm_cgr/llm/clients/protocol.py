@@ -17,7 +17,7 @@ class GenerationProtocol(Protocol):
         temperature: float | None = None,
         top_p: float | None = None,
         max_tokens: int | None = None,
-    ) -> list[str]:
+    ) -> list[str] | list[tuple[str, str | None]]:
         """
         Generate model responses from the LLMs API.
         """
@@ -30,7 +30,7 @@ class GenerationProtocol(Protocol):
         temperature: float | None = None,
         top_p: float | None = None,
         max_tokens: int | None = None,
-    ) -> str:
+    ) -> str | tuple[str, str | None]:
         """
         Generate a model response from the LLMs API, in the ongoing chat.
         """

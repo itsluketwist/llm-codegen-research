@@ -66,7 +66,7 @@ class Anthropic_LLM(Base_LLM):
         temperature: float | None = None,
         top_p: float | None = None,
         max_tokens: int | None = None,
-    ) -> str:
+    ) -> tuple[str, str | None]:
         """Generate a model response from the Anthropic API."""
         response = self._client.messages.create(
             model=model,
@@ -77,4 +77,4 @@ class Anthropic_LLM(Base_LLM):
             max_tokens=max_tokens if max_tokens is not None else DEFAULT_MAX_TOKENS,
         )
         # cast to TextBlock as non-tool, non-thinking requests always return text
-        return cast(TextBlock, response.content[0]).text
+        return cast(TextBlock, response.content[0]).text, None
