@@ -18,18 +18,23 @@ class OpenAI_LLM(Base_LLM):
         temperature: float | None = None,
         top_p: float | None = None,
         max_tokens: int | None = None,
+        enable_reasoning: bool = False,
     ) -> None:
         """
         Initialise the OpenAI client.
 
         Requires the OPENAI_API_KEY environment variable to be set.
         """
+        if enable_reasoning:
+            raise ValueError("OpenAI_LLM does not support enable_reasoning.")
+
         super().__init__(
             model=model,
             system=system,
             temperature=temperature,
             top_p=top_p,
             max_tokens=max_tokens,
+            enable_reasoning=enable_reasoning,
         )
         self._client = openai.OpenAI()
 

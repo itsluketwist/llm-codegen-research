@@ -33,6 +33,7 @@ def get_llm(
     top_p: float | None = None,
     max_tokens: int | None = None,
     provider: str | None = None,
+    enable_reasoning: bool = False,
     tools: list[Tool] | None = None,
     max_tool_iterations: int = MAX_TOOL_ITERATIONS,
     max_tool_calls: int = MAX_TOOL_CALLS,
@@ -41,7 +42,8 @@ def get_llm(
     Initialise the correct LLM client for the given model.
 
     If tools are provided, returns an OpenAI_Tool_LLM instance. Tool calls
-    are currently only supported for OpenAI models.
+    are currently only supported for OpenAI models. enable_reasoning is only
+    supported by Anthropic, DeepSeek, Mistral, and TogetherAI models.
     """
     llm_class: type[Base_LLM]
     if provider is not None:
@@ -63,6 +65,8 @@ def get_llm(
             raise NotImplementedError(
                 "Tool calls are only supported for OpenAI models."
             )
+        if enable_reasoning:
+            raise ValueError("OpenAI_Tool_LLM does not support enable_reasoning.")
         return OpenAI_Tool_LLM(
             tools=tools,
             model=model,
@@ -80,6 +84,7 @@ def get_llm(
         temperature=temperature,
         top_p=top_p,
         max_tokens=max_tokens,
+        enable_reasoning=enable_reasoning,
     )
 
 

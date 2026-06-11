@@ -7,4 +7,7 @@ DEFAULT_MODEL = "gpt-4.1-mini-2025-04-14"
 DEFAULT_CODEBLOCK_LANGUAGE = "python"
 
 # the default max_tokens to be used when prompting models
-DEFAULT_MAX_TOKENS = 2000
+DEFAULT_MAX_TOKENS = 4096
+
+# default token budget for anthropic extended thinking (minimum allowed is 1024)
+DEFAULT_THINKING_BUDGET = 2048

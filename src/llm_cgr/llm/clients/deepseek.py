@@ -76,6 +76,8 @@ class DeepSeek_LLM(Base_LLM):
             temperature=temperature if temperature is not None else openai.omit,
             top_p=top_p if top_p is not None else openai.omit,
             max_completion_tokens=max_tokens if max_tokens is not None else openai.omit,
+            reasoning_effort="high",
+            extra_body={"thinking": {"type": "enabled"}},
         )
         message = response.choices[0].message
 

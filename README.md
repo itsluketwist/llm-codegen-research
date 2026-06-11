@@ -138,7 +138,7 @@ uv add openai
 Or to upgrade dependencies:
 
 ```shell
-uv sync --upgrade
+uv sync --extra api --upgrade
 ```
 
 Check typings with `ty`:

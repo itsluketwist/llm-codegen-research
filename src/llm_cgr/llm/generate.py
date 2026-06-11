@@ -1,10 +1,38 @@
 """API utilities for interfacing with the generation models."""
 
-from typing import cast
+from typing import Literal, overload
 
 from llm_cgr.defaults import DEFAULT_MODEL
 from llm_cgr.llm.clients import get_llm
 from llm_cgr.llm.prompts import BOOL_SYSTEM_PROMPT, LIST_SYSTEM_PROMPT
+
+
+@overload
+def generate(
+    user: str,
+    model: str = DEFAULT_MODEL,
+    system: str | None = None,
+    temperature: float | None = None,
+    top_p: float | None = None,
+    max_tokens: int | None = None,
+    provider: str | None = None,
+    enable_reasoning: Literal[False] = False,
+    **generate_kwargs,
+) -> str: ...
+
+
+@overload
+def generate(
+    user: str,
+    model: str = DEFAULT_MODEL,
+    system: str | None = None,
+    temperature: float | None = None,
+    top_p: float | None = None,
+    max_tokens: int | None = None,
+    provider: str | None = None,
+    enable_reasoning: Literal[True] = True,
+    **generate_kwargs,
+) -> tuple[str, str | None]: ...
 
 
 def generate(
@@ -15,15 +43,20 @@ def generate(
     top_p: float | None = None,
     max_tokens: int | None = None,
     provider: str | None = None,
+    enable_reasoning: bool = False,
     **generate_kwargs,
-) -> str:
+) -> str | tuple[str, str | None]:
     """
     Simple function to quickly prompt a model for a response.
+
+    When enable_reasoning is True, returns a (response, reasoning) tuple instead
+    of a plain string.
     """
     client = get_llm(
         model=model,
         system=system,
         provider=provider,
+        enable_reasoning=enable_reasoning,
     )
     [result] = client.generate(
         user=user,
@@ -33,8 +66,7 @@ def generate(
         max_tokens=max_tokens,
         **generate_kwargs,
     )
-    # enable_reasoning is False by default, so result is always a plain string
-    return cast(str, result)
+    return result
 
 
 def generate_list(
