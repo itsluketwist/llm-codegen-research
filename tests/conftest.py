@@ -13,6 +13,8 @@ import pytest
         "claude-3-5-haiku-20241022",
         "mistral-small-2503",
         "deepseek-chat",
+        "qwen-turbo",
+        "gemini-flash-lite-latest",
     ],
 )
 def model(request):

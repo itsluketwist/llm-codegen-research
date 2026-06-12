@@ -3,6 +3,7 @@
 from llm_cgr.llm.clients.anthropic import Anthropic_LLM
 from llm_cgr.llm.clients.base import Base_LLM
 from llm_cgr.llm.clients.deepseek import DeepSeek_LLM
+from llm_cgr.llm.clients.google import Google_LLM
 from llm_cgr.llm.clients.mistral import Mistral_LLM
 from llm_cgr.llm.clients.nscale import Nscale_LLM
 from llm_cgr.llm.clients.openai import OpenAI_LLM
@@ -13,14 +14,17 @@ from llm_cgr.llm.clients.openai_tool import (
     Tool,
 )
 from llm_cgr.llm.clients.protocol import GenerationProtocol
+from llm_cgr.llm.clients.qwen import Qwen_LLM
 from llm_cgr.llm.clients.together import TogetherAI_LLM
 
 
 PROVIDER_MAP: dict[str, type[Base_LLM]] = {
     "anthropic": Anthropic_LLM,
     "deepseek": DeepSeek_LLM,
+    "google": Google_LLM,
     "mistral": Mistral_LLM,
     "openai": OpenAI_LLM,
+    "qwen": Qwen_LLM,
     "together": TogetherAI_LLM,
     "nscale": Nscale_LLM,
 }
@@ -43,7 +47,7 @@ def get_llm(
 
     If tools are provided, returns an OpenAI_Tool_LLM instance. Tool calls
     are currently only supported for OpenAI models. enable_reasoning is only
-    supported by Anthropic, DeepSeek, Mistral, and TogetherAI models.
+    supported by Anthropic, DeepSeek, Google, Mistral, Qwen, and TogetherAI models.
     """
     llm_class: type[Base_LLM]
     if provider is not None:
@@ -56,6 +60,10 @@ def get_llm(
         llm_class = Mistral_LLM
     elif "deepseek" in model:
         llm_class = DeepSeek_LLM
+    elif "qwen" in model.lower():
+        llm_class = Qwen_LLM
+    elif "gemini" in model.lower():
+        llm_class = Google_LLM
     else:
         llm_class = TogetherAI_LLM
 
@@ -93,10 +101,12 @@ __all__ = [
     "Base_LLM",
     "DeepSeek_LLM",
     "GenerationProtocol",
+    "Google_LLM",
     "OpenAI_LLM",
     "OpenAI_Tool_LLM",
     "TogetherAI_LLM",
     "Mistral_LLM",
+    "Qwen_LLM",
     "Tool",
     "get_llm",
 ]

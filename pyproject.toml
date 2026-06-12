@@ -28,6 +28,7 @@ dependencies = [
 [project.optional-dependencies]
 api = [
     "anthropic",
+    "google-genai",
     "mistralai",
     "openai",
     "together",
