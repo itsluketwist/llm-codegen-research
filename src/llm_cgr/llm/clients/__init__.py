@@ -2,6 +2,7 @@
 
 from llm_cgr.llm.clients.anthropic import Anthropic_LLM
 from llm_cgr.llm.clients.base import Base_LLM
+from llm_cgr.llm.clients.custom import Custom_LLM
 from llm_cgr.llm.clients.deepseek import DeepSeek_LLM
 from llm_cgr.llm.clients.google import Google_LLM
 from llm_cgr.llm.clients.mistral import Mistral_LLM
@@ -20,6 +21,7 @@ from llm_cgr.llm.clients.together import TogetherAI_LLM
 
 PROVIDER_MAP: dict[str, type[Base_LLM]] = {
     "anthropic": Anthropic_LLM,
+    "custom": Custom_LLM,
     "deepseek": DeepSeek_LLM,
     "google": Google_LLM,
     "mistral": Mistral_LLM,
@@ -99,6 +101,7 @@ def get_llm(
 __all__ = [
     "Anthropic_LLM",
     "Base_LLM",
+    "Custom_LLM",
     "DeepSeek_LLM",
     "GenerationProtocol",
     "Google_LLM",
